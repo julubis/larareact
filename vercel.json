@@ -16,7 +16,6 @@
   ],
   "env": {
     "APP_NAME": "Laravel Vercel",
-    "APP_ENV": "development",
     "APP_DEBUG": "false",
     "APP_URL": "https://laravel-jul.vercel.app",
 
@@ -32,5 +31,5 @@
     "SSR_TEMP_PATH": "/tmp/ssr",
     "NODE_PATH": "node"
   },
-  "outputDirectory": "pubic"
+  "outputDirectory": "public"
 }
