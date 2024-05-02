@@ -4,14 +4,16 @@
   "functions": {
     "api/index.php":  { "runtime": "vercel-php@0.6.0" }
   },
-  "routes": [{
-    "src": "/(.*)",
-    "dest": "/api/index.php"
-  },
-  {
-    "src": "/build/(.*)",
-    "dest": "/public/build/"
-  }],
+  "routes": [
+    {
+      "src": "/build/(.*)",
+      "dest": "public/build/"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ],
   "env": {
     "APP_NAME": "Laravel Vercel",
     "APP_ENV": "development",
