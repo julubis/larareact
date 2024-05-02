@@ -16,6 +16,7 @@
   ],
   "env": {
     "APP_NAME": "Laravel Vercel",
+    "APP_ENV": "production",
     "APP_DEBUG": "false",
     "APP_URL": "https://laravel-jul.vercel.app",
 
