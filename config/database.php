@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Str;
 
-echo __DIR__;
-
 return [
 
     /*
