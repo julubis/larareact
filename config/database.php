@@ -2,6 +2,12 @@
 
 use Illuminate\Support\Str;
 
+$MYSQL_CA = '';
+if (env('MYSQL_ATTR_SSL_CA') != '') {
+    $MYSQL_CA = __DIR__ . env('MYSQL_ATTR_SSL_CA');
+}
+echo $MYSQL_CA;
+
 return [
 
     /*
@@ -55,7 +61,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::MYSQL_ATTR_SSL_CA => $MYSQL_CA,
             ]) : [],
         ],
 
