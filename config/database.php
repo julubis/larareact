@@ -6,7 +6,6 @@ $MYSQL_CA = '';
 if (env('MYSQL_ATTR_SSL_CA') != '') {
     $MYSQL_CA = __DIR__ . env('MYSQL_ATTR_SSL_CA');
 }
-echo $MYSQL_CA;
 
 return [
 
