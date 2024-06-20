@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities{
+    .btn-sm{
+        @apply px-3 py-2 text-sm font-medium text-center focus:ring focus:outline-none
+    }
+    .btn-md{
+        @apply px-5 py-2.5 text-sm font-medium text-center focus:ring focus:outline-none
+    }
+    .btn-lg{
+        @apply px-5 py-3 text-base font-medium text-center focus:ring focus:outline-none
+    }
+    input[type]:not([type="checkbox"]){
+        @apply text-sm bg-gray-50 border border-gray-300 text-gray-500 focus:ring-primary-500 focus:border-primary-500
+    }  
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 2px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 2px;
+}
+ 
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
