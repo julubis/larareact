@@ -23,7 +23,6 @@ class ProductController extends Controller
             $product->orderBy($params['col'], $params['sort']);
         }
         
-        
         return Inertia::render('Product', [
             'products' => $product->get(),
         ]);
