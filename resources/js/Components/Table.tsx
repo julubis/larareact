@@ -8,7 +8,7 @@ export default function Table({header, body, ...props}: PropsWithChildren<{heade
         filters: { col?: string; sort?: string };
       }>().props;
     
-    const [values, setValues] = useState(filters);
+    const [values, setValues] = useState(filters || {col: '', sort: ''});
     
     const setSort = (col: string) => {
         const data = values;
