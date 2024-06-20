@@ -9,7 +9,7 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
     const { url } = usePage();
 
     return (
-        <div className="antialiased bg-gray-100">
+        <div className="antialiased bg-slate-50">
             <nav className="bg-white border-b border-gray-200 px-4 py-2.5 fixed left-0 right-0 top-0 z-30">
                 <div className="flex flex-wrap justify-between items-center">
                     <div className="flex justify-start items-center">
@@ -56,7 +56,9 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                         </div>
 
                         <Popover className="relative">
-                            <PopoverButton className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300"><img className="w-8 h-8 rounded-full" src="" alt="user photo" /></PopoverButton>
+                            <PopoverButton className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-primary-500 rounded-full hover:ring hover:ring-primary-200">
+                                <span className="font-medium text-white">{user.name[0]}</span>
+                            </PopoverButton>
                             <PopoverPanel anchor="bottom end" className="my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow flex flex-col z-40">
                                 <Link href="/account" className="block px-4 py-2 text-sm">Profil</Link>
                                 <Link href={route('logout')} method="post" as="button" className="block px-4 py-2 text-sm">Keluar</Link>
@@ -109,7 +111,7 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                 </div>
             </aside>
 
-            <main className={`p-4 z-0 ${toggle ? '' : 'md:ml-64'} h-screen pt-20`}>
+            <main className={`p-4 z-0 ${toggle ? '' : 'md:ml-64'} min-h-screen pt-20`}>
                 <span className={`md:hidden fixed top-0 left-0 h-full bg-black/60 backdrop-blur-sm w-full z-10 ${!toggle && 'hidden'}`} onClick={() => setToggle(false)}></span>
                 {children}
             </main>

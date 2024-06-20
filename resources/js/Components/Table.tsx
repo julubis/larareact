@@ -8,7 +8,7 @@ export default function Table({header, body, ...props}: PropsWithChildren<{heade
         filters: { col?: string; sort?: string };
       }>().props;
     
-    const [values, setValues] = useState(filters || {col: null, sort: null});
+    const [values, setValues] = useState(filters);
     
     const setSort = (col: string) => {
         const data = values;
@@ -28,9 +28,9 @@ export default function Table({header, body, ...props}: PropsWithChildren<{heade
     }
 
     return (
-        <div className="relative overflow-x-auto border border-gray-200 sm:rounded-lg mb-2">
+        <div className="relative overflow-x-auto border border-gray-200 rounded-lg mb-2">
             <table className="w-full text-sm text-left text-gray-500">
-                <thead className="text-xs text-white uppercase bg-primary-500">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                     <tr>
                         {header.map(head => <th scope="col" className="px-6 py-3">
                             {
@@ -39,8 +39,8 @@ export default function Table({header, body, ...props}: PropsWithChildren<{heade
                                     {head.label}
                                     {
                                         values?.col === head.name && values?.sort === 'asc' ?
-                                        <ArrowUp className="w-5 h-5 text-white"/> : values.col === head.name && values.sort === 'desc' ?
-                                        <ArrowDown className="w-5 h-5 text-white"/> : <ArrowUnfold  className="w-5 h-5 text-primary-300"/>
+                                        <ArrowUp className="w-5 h-5 text-gray-700"/> : values?.col === head.name && values?.sort === 'desc' ?
+                                        <ArrowDown className="w-5 h-5 text-gray-700"/> : <ArrowUnfold  className="w-5 h-5 text-gray-400"/>
                                     }
                                 </button> :
                                 head.label
@@ -52,7 +52,7 @@ export default function Table({header, body, ...props}: PropsWithChildren<{heade
                     {body.map(rows => {
                         return (
                             <tr className="bg-white border-b hover:bg-gray-50">
-                            {rows.map(data => <td className="px-6 py-4 font-medium text-gray-800">{data}</td>)}
+                            {rows.map(data => <td className="px-6 py-4 text-gray-800">{data}</td>)}
                             </tr>
                         )
                     })}

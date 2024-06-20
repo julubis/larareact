@@ -30,7 +30,7 @@ export default function Product({ auth, products }: PageProps & {products: Recor
     
     return (
         <AuthLayout user={auth.user}>
-            <div className="p-4 bg-white rounded-lg shadow">
+            <div>
                 <h2 className="font-medium text-xl mb-6">Data Barang</h2>
                 <div className="mb-2 flex md:flex-row flex-col-reverse md:justify-between gap-2">
                     <div className="relative w-full md:w-80">
