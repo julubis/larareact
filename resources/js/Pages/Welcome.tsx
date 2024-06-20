@@ -56,7 +56,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }: PageProps<
                 Loading...
                 </button>
                 <button className="btn">{<EyeOff/>} Simpan</button>
-                <Table/>
+                
             </div>
            
             {/* <div className="text-black/50 dark:bg-black dark:text-white/50">
