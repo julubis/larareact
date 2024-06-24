@@ -24,8 +24,8 @@ class ProductController extends Controller
         $shop_id = Auth::user()->shop_id;
 
         $products = Product::query()
-            ->join('product_units as u', 'u.id', '=', 'products.unit_id')
-            ->join('product_categories as c', 'c.id', '=', 'products.category_id')
+            ->leftJoin('product_units as u', 'u.id', '=', 'products.unit_id')
+            ->leftJoin('product_categories as c', 'c.id', '=', 'products.category_id')
             ->where('products.shop_id', '=', $shop_id);
 
         if($search) $products->where('products.name', 'like', '%'.$search.'%');
