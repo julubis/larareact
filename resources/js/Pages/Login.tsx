@@ -5,7 +5,7 @@ import { FormEventHandler, useState } from "react";
 
 export default function Login({}) {
     const [showPass, setShowPass] = useState(false);
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
         remember: false,

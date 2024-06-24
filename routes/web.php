@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\Session;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,7 +35,13 @@ Route::middleware('auth')->group(function () {
     Route::get('home', function () {
         return Inertia::render('Home');
     });
-    Route::get('products', [ProductController::class, 'index']);
+    Route::get('products', [ProductController::class, 'index'])->name('products.get');
+    Route::get('products/new', [ProductController::class, 'create'])->name('products.create');
+    Route::post('products/new', [ProductController::class, 'store'])->name('products.add');
+    Route::get('products/{id}', [ProductController::class, 'show'])->name('products.detail');
+
+
+
     Route::get('distributors', function () {
         return Inertia::render('Distributor', [
             'filters' => Request::all('col', 'sort'), 
@@ -53,15 +59,13 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// Route::resource('/posts', \App\Http\Controllers\PostController::class);
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Route::get()
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::post('logout', [Session::class, 'destroy'])->name('logout');
 });
 
 Route::middleware('guest')->group(function () {
@@ -70,5 +74,3 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store'])->name('register');
 });
-
-require __DIR__.'/auth.php';

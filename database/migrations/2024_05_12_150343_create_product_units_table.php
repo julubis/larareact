@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('shop_id');
             $table->timestamps();
 
+            $table->unique(['name', 'shop_id'], 'shop_product_unit');
             $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');
-            // $table->unique(['name', 'shop_id']);
         });
     }
 

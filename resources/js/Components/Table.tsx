@@ -3,12 +3,12 @@ import { PropsWithChildren, ReactNode, useState } from "react";
 import { ArrowDown, ArrowUnfold, ArrowUp } from "./Icons";
 import { router, usePage, } from "@inertiajs/react";
 
-export default function Table({header, body, ...props}: PropsWithChildren<{header: TableHeader[], body: ReactNode[][]}>) {
-    const { filters } = usePage<{
-        filters: { col?: string; sort?: string };
+export default function Table({header, body, children, ...props}: PropsWithChildren<{header: TableHeader[], body: ReactNode[][]}>) {
+    const { query } = usePage<{
+        query: { col?: string; sort?: string };
       }>().props;
     
-    const [values, setValues] = useState(filters || {col: '', sort: ''});
+    const [values, setValues] = useState(query || {col: '', sort: ''});
     
     const setSort = (col: string) => {
         const data = values;
@@ -28,36 +28,52 @@ export default function Table({header, body, ...props}: PropsWithChildren<{heade
     }
 
     return (
-        <div className="relative overflow-x-auto border border-gray-200 rounded-lg mb-2">
-            <table className="w-full text-sm text-left text-gray-500">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                    <tr>
-                        {header.map(head => <th scope="col" className="px-6 py-3">
-                            {
-                                head.sortable && head.name ? 
-                                <button onClick={() => setSort(head.name || '')} className="uppercase items-center flex gap-2">
-                                    {head.label}
-                                    {
-                                        values?.col === head.name && values?.sort === 'asc' ?
-                                        <ArrowUp className="w-5 h-5 text-gray-700"/> : values?.col === head.name && values?.sort === 'desc' ?
-                                        <ArrowDown className="w-5 h-5 text-gray-700"/> : <ArrowUnfold  className="w-5 h-5 text-gray-400"/>
-                                    }
-                                </button> :
-                                head.label
-                            }
-                        </th>)}
-                    </tr>
-                </thead>
-                <tbody>
-                    {body.map(rows => {
-                        return (
-                            <tr className="bg-white border-b hover:bg-gray-50">
-                            {rows.map(data => <td className="px-6 py-4 text-gray-800">{data}</td>)}
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
-        </div>
+        <>
+        {
+            body.length ? 
+            <div className="relative overflow-x-auto border border-gray-200 rounded-lg mb-2">
+                <table className="w-full text-sm text-left text-gray-500">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            {header.map((head, i) => (
+                                <>
+                                <th scope="col" className="px-6 py-3" key={i}>
+                                {
+                                    head.sortable && head.name ? 
+                                    <button onClick={() => setSort(head.name || '')} disabled={body.length < 1} className="uppercase items-center flex gap-2" key={i}>
+                                        {head.label}
+                                        {
+                                            values?.col === head.name && values?.sort === 'asc' ?
+                                            <ArrowUp className="w-4 h-4 text-gray-700"/> : values?.col === head.name && values?.sort === 'desc' ?
+                                            <ArrowDown className="w-4 h-4 text-gray-700"/> : <ArrowUnfold  className="w-5 h-5 text-gray-400"/>
+                                        }
+                                    </button> :
+                                    head.label
+                                }
+                                </th>
+                                </>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                        body.map((rows, idx) => {
+                            return (
+                                <>
+                                    <tr className="bg-white border-b hover:bg-gray-50" key={`tr-${idx}`}>
+                                    {rows.map((data, idx) => <td className="px-6 py-4 text-gray-800" key={`td-${idx}`}>{data}</td>)}
+                                    </tr>
+                                </>
+                            )
+                        })
+                        }
+                    </tbody>
+                </table>
+            </div> :
+            <div className="flex items-center justify-center bg-white border border-gray-200 rounded-lg mb-2">
+                {children}
+            </div>
+        }
+        </>
     )
 }

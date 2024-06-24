@@ -17,12 +17,13 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
-            $table->integer('stock');
+            $table->unsignedInteger('stock')->default(0);
             $table->foreignId('shop_id');
-            $table->foreignId('unit_id');
-            $table->foreignId('category_id');
+            $table->foreignId('unit_id')->nullable();
+            $table->foreignId('category_id')->nullable();
             $table->timestamps();
 
+            $table->unique(['name', 'shop_id'], 'shop_product');
             $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');
             $table->foreign('unit_id')->references('id')->on('product_units')->onDelete('cascade');
             $table->foreign('category_id')->references('id')->on('shops')->onDelete('cascade');

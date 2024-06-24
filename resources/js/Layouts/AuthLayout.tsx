@@ -1,4 +1,4 @@
-import { Archive, Box, Dashboard, Groups, Person, Unarchive } from "@/Components/Icons";
+import { Archive, Box, Dashboard, Groups, Logout, Person, Unarchive } from "@/Components/Icons";
 import { User } from "@/types";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
@@ -14,54 +14,44 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                 <div className="flex flex-wrap justify-between items-center">
                     <div className="flex justify-start items-center">
                     <button
-                        className="p-2 mr-2 text-gray-600 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100"
+                        className="p-2 mr-2 text-gray-600 rounded-md cursor-pointer hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100"
                         onClick={() => {setToggle(!toggle)}}
                     >
                         <svg
-                        aria-hidden="true"
                         className="w-6 h-6"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
                         >
                         <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                            clip-rule="evenodd"
+                            clipRule="evenodd"
                         ></path>
                         </svg>
-                        <svg
-                        aria-hidden="true"
-                        className="hidden w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                        >
-                        <path
-                            fill-rule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clip-rule="evenodd"
-                        ></path>
-                        </svg>
-                        <span className="sr-only">Toggle sidebar</span>
                     </button>
                     <Link href="/" className="flex items-center justify-between mr-4">
                         <span className="self-center text-2xl font-semibold whitespace-nowrap">Stokku</span>
                     </Link>
                     </div>
                     <div className="flex items-center lg:order-2">
-                        <div className="hidden md:block px-3">
-                            <span className="block text-sm font-medium text-gray-900">{user.name}</span>
-                            <span className="block text-xs text-gray-500 truncate">{user.email}</span>
-                        </div>
-
                         <Popover className="relative">
                             <PopoverButton className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-primary-500 rounded-full hover:ring hover:ring-primary-200">
                                 <span className="font-medium text-white">{user.name[0]}</span>
                             </PopoverButton>
-                            <PopoverPanel anchor="bottom end" className="my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow flex flex-col z-40">
-                                <Link href="/account" className="block px-4 py-2 text-sm">Profil</Link>
-                                <Link href={route('logout')} method="post" as="button" className="block px-4 py-2 text-sm">Keluar</Link>
+                            <PopoverPanel anchor="bottom end" className="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow">
+                                <div className="px-4 py-3">
+                                    <span className="block text-sm text-gray-900">{user.name}</span>
+                                    <span className="block text-xs text-gray-500 truncate">{user.email}</span>
+                                </div>
+                                <ul className="py-2" aria-labelledby="user-menu-button">
+                                    <li className="text-gray-700">
+                                        <Link href="/account" className="w-full items-center px-4 py-2 text-sm hover:bg-gray-100 flex gap-2"><Person className="w-4 h-4"/>Profil</Link>
+                                    </li>
+                                    <li>
+                                        <Link href={route('logout')} method="post" as="button" className="text-start items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex gap-2"><Logout className="w-4 h-4"/>Keluar</Link>
+                                    </li>
+                                </ul>
                             </PopoverPanel>
                         </Popover>
                     </div>
@@ -72,13 +62,13 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                 <div className="overflow-y-auto py-5 px-3 h-full bg-white">
                     <ul className="space-y-2">
                         <li>
-                            <Link href="/home" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url.startsWith('/home') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
+                            <Link href="/home" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/home') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Dashboard className="w-5 h-5"/>
                             Dashboard
                             </Link>
                         </li>
                         <li>
-                            <Link href="/products" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url.startsWith('/products') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
+                            <Link href="/products" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/products') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Box className="w-5 h-5"/>
                             Data Barang
                             </Link>
