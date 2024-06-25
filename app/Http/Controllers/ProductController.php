@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductUnit;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -31,7 +30,7 @@ class ProductController extends Controller
             ->where('products.shop_id', '=', $shop_id);
 
         if($search) $products->where('products.name', 'like', '%'.$search.'%');
-        if(preg_match('/^B\d+$/', $search)) $products->where('products.id', 'like', (int)substr($search, 1), 'or');
+        if(preg_match('/^B\d{3,}$/', $search)) $products->where('products.id', 'like', (int)substr($search, 1), 'or');
 
         if(in_array($column, ['id', 'name', 'category', 'stock', 'unit', 'price']) && $sort && in_array($sort, ['asc', 'desc'])) {
             if($column === 'category') $products->orderBy('c.name', $sort);
@@ -123,7 +122,7 @@ class ProductController extends Controller
             'description' => $request->description
         ]);
 
-        return redirect('/products');
+        return redirect('/products')->with(['success' => 'Berhasil menambah data barang']);
     }
 
     /**
@@ -131,9 +130,19 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        if (!preg_match('/^B\d+$/', $id)) return abort(404);
+        if (!preg_match('/^B\d{3,}$/', $id)) return abort(404);
         $product_id = (int)substr($id, 1);
         $shop_id = Auth::user()->shop_id;
+
+        $category = request()->query('category');
+        $unit = request()->query('unit');
+
+        $categories = ProductCategory::query()
+            ->where('shop_id', $shop_id);
+        $units = ProductUnit::query()
+            ->where('shop_id', $shop_id);
+        if ($category) $categories->where('name', 'like', '%'.$category.'%');
+        if ($unit) $units->where('name', 'like', '%'.$unit.'%');
 
         $product = Product::with(['category', 'unit'])
             ->where('id', '=', $product_id)
@@ -144,8 +153,14 @@ class ProductController extends Controller
             $product = [
                 'id' => $product->id,
                 'name' => $product->name,
-                'category' => $product->category?->name,
-                'unit' => $product->unit?->name,
+                'category' => [
+                    'id' => $product->category?->id,
+                    'name' =>  $product->category?->name
+                ],
+                'unit' => [
+                    'id' => $product->unit?->id,
+                    'name' =>  $product->unit?->name
+                ],
                 'price' => $product->price,
                 'stock' => $product->stock,
                 'description' => $product->description,
@@ -154,6 +169,8 @@ class ProductController extends Controller
         
         return Inertia::render('Product/Detail', [
             'product' => $product,
+            'categories' => $categories->take(5)->get(),
+            'units' => $units->take(5)->get()
         ]);
     }
 
@@ -170,7 +187,62 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        if (!preg_match('/^P\d{3,}$/', $id)) return abort(404);
+        $product_id = (int)substr($id, 1);
+        $shop_id = Auth::user()->shop_id;
+
+        $request->validate([
+            'name' => ['required', 'string', 'unique:products,name,NULL,id,shop_id,'.$shop_id.'id,id,'.$id],
+            'category.id' => ['numeric'],
+            'unit.id' => ['numeric'],
+            'category.name' => ['string'],
+            'unit.name' => ['string'],
+            'price' => ['required', 'numeric'],
+            'code' => ['string'],
+            'description' => ['string'],
+        ],[
+            'name.required' => 'Nama wajib diisi',
+            'name.string' => 'Nama wajib berupa teks',
+            'price.required' => 'Harga wajib diisi',
+            'price.numeric' => 'Harga wajib berupa angka',
+            'category.name.string' => 'Kategori wajib berupa teks',
+            'unit.name.string' => 'Satuan wajib berupa teks',
+            'code.string' => 'Barcode wajib berupa teks',
+            'description.string' => 'Deskripsi wajib berupa teks',
+        ]);
+
+        $category_id = $request->category['id'];
+        $unit_id = $request->unit['id'];
+
+        if ($category_id === 0) {
+            $category = ProductCategory::create([
+                'name' => $request->category['name'],
+                'shop_id' => $shop_id
+            ]); 
+            $category_id = $category->id;
+        } 
+
+        if ($unit_id === 0) {
+            $unit = ProductUnit::create([
+                'name' => $request->unit['name'],
+                'shop_id' => $shop_id
+            ]); 
+            $unit_id = $unit->id;
+        } 
+
+        Product::query()
+            ->where('id', '=', $product_id)
+            ->where('shop_id', '=', $shop_id)
+            ->update([
+                'name' => $request->name,
+                'category_id' => $category_id,
+                'unit_id' => $unit_id,
+                'shop_id' => $shop_id,
+                'price' => $request->price,
+                'description' => $request->description
+            ]);
+        
+        return redirect('/products')->with(['success' => 'Berhasil mengubah data barang']);
     }
 
     /**
@@ -178,6 +250,15 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        // Product::un
+        if (!preg_match('/^P\d{3,}$/', $id)) return abort(404);
+        $product_id = (int)substr($id, 1);
+        $shop_id = Auth::user()->shop_id;
+
+        Product::query()
+            ->where('id', '=', $product_id)
+            ->where('shop_id', '=', $shop_id)
+            ->delete();
+
+        return redirect('/products')->with(['success' => 'Berhasil menghapus data barang']);
     }
 }

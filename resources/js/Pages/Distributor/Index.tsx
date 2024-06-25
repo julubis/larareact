@@ -1,6 +1,5 @@
-import { Add, ScanBarcode, Search } from "@/Components/Icons";
+import { Add, Search } from "@/Components/Icons";
 import Pagination from "@/Components/Pagination";
-// import Scanner from "@/Components/Scanner";
 import Table from "@/Components/Table";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps, TableHeader } from "@/types";
@@ -18,8 +17,8 @@ interface Distributors {
     last_page: number
 }
 
-export default function Index({ auth, flash, distributors }: PageProps & {distributors: Distributors}) {
-    const { query } = usePage<{query: {search?: string}}>().props;
+export default function Index({ auth, distributors, flash }: PageProps & {distributors: Distributors}) {
+    const { query } = usePage<{query: {search?: string}, flash: {type: string, message: string}}>().props;
     const [search, setSearch] = useState(query.search);
     const debounce = useRef<number | undefined>();
 

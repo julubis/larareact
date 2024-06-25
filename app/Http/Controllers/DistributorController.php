@@ -12,7 +12,7 @@ class DistributorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($flash = ['success' => null, 'danger' => null])
+    public function index()
     {
         $search = request()->query('search');
         $column = request()->query('col');
@@ -20,16 +20,21 @@ class DistributorController extends Controller
 
         $shop_id = Auth::user()->shop_id;
         $distributors = Distributor::query()
-            ->where('shop_id', '=', $shop_id)
-            ->paginate(10);
+            ->where('shop_id', '=', $shop_id);
+
+        if($search) $distributors->where('name', 'like', '%'.$search.'%');
+        if(preg_match('/^D\d{3,}$/', $search)) $distributors->where('id', 'like', (int)substr($search, 1), 'or');
+
+        if(in_array($column, ['id', 'name']) && $sort && in_array($sort, ['asc', 'desc'])) {
+            $distributors->orderBy($column, $sort);
+        } 
         return Inertia::render('Distributor/Index', [
-            'distributors' => $distributors,
+            'distributors' => $distributors->paginate(10),
             'query' => [
                 'search' => $search,
                 'col' => $column,
                 'sort' => $sort
-            ],
-            'flash' => $flash
+            ]
         ]);
     }
 
@@ -70,7 +75,7 @@ class DistributorController extends Controller
             'shop_id' => $shop_id
         ]);
 
-        return $this->index(['success' => 'Berhasil menambahkan data distributor']);
+        return redirect('/distributors')->with(['success' => 'Berhasil menambahkan data distributor']);
     }
 
     /**
@@ -132,7 +137,7 @@ class DistributorController extends Controller
                 'address' => $request->address
             ]);
         
-        return $this->index(['success' => 'Berhasil mengubah data distributor']);
+        return redirect('/distributors')->with(['success' => 'Berhasil mengubah data distributor']);
     }
 
     /**
@@ -149,6 +154,6 @@ class DistributorController extends Controller
             ->where('shop_id', '=', $shop_id)
             ->delete();
 
-        return redirect('/distributors');
+        return redirect('/distributors')->with(['success' => 'Berhasil menghapus data distributor']);
     }
 }

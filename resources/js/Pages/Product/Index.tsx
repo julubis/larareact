@@ -22,7 +22,7 @@ interface Products {
     last_page: number
 }
 
-export default function Index({ auth, products }: PageProps & {products: Products}) {
+export default function Index({ auth, products, flash }: PageProps & {products: Products}) {
     const [isOpen, setIsOpen] = useState(false);
     const [isScan, setIsScan] = useState(false);
     const { query } = usePage<{query: {search?: string}}>().props;
@@ -84,6 +84,9 @@ export default function Index({ auth, products }: PageProps & {products: Product
                         </Link>
                     </div>
                 </div>
+                {flash.success && <div className="p-3 mb-2 text-sm text-green-800 rounded-lg bg-green-50 border border-green-200" role="alert">
+                    {flash.success}
+                </div>}
                 <Table header={tableHeader} body={productsList}>
                     {search?.length ? 'Barang tidak ditemukan' : 'Barang masih kosong'}
                 </Table>
