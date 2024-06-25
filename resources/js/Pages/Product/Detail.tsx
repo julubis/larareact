@@ -36,6 +36,7 @@ export default function Detail({ auth, product }: PageProps & {product: Product}
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Nama Barang</label>
                     <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product?.name}</div>
+
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Kategori</label>
@@ -68,10 +69,9 @@ export default function Detail({ auth, product }: PageProps & {product: Product}
                     {/* <textarea value={product.description} name="description" className="w-full rounded-md bg-gray-50 border border-gray-300" ></textarea> */}
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
-                    <Link href="/products" className="flex gap-2 mb-2 text-black border border-gray-300 bg-white hover:text-white hover:bg-primary-500 focus:ring focus:outline-none focus:border-none focus:ring-primary-300 font-medium rounded-md text-sm px-5 py-2.5 text-center"><Back className="w-5 h-5"/>Kembali</Link>
+                    <Link href="/products" className="flex gap-2 mb-2 text-black border border-gray-300 bg-white hover:text-white hover:bg-primary-500 focus:ring focus:outline-none focus:border-none focus:ring-primary-300 font-medium rounded-md text-sm px-5 py-2.5 text-center"><Back className="w-5 h-5"/>Edit</Link>
                     <button type="submit" className="flex gap-2 mb-2 text-white bg-primary-500 hover:bg-primary-600 focus:ring focus:outline-none focus:border-none focus:ring-primary-300 font-medium rounded-md text-sm px-5 py-2.5 text-center disabled:cursor-not-allowed disabled:bg-primary-400"><Save className="w-5 h-5"/> Simpan</button>
                 </div>
-                
             </form>
         </AuthLayout>
     )

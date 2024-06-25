@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 @layer utilities{
-    .btn-sm{
-        @apply px-3 py-2 text-sm font-medium text-center focus:ring focus:outline-none
-    }
     .btn-md{
         @apply px-5 py-2.5 text-sm font-medium text-center focus:ring focus:outline-none
     }

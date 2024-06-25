@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -36,17 +37,17 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Home');
     });
     Route::get('products', [ProductController::class, 'index'])->name('products.get');
+    Route::post('products', [ProductController::class, 'store'])->name('products.add');
     Route::get('products/new', [ProductController::class, 'create'])->name('products.create');
-    Route::post('products/new', [ProductController::class, 'store'])->name('products.add');
-    Route::get('products/{id}', [ProductController::class, 'show'])->name('products.detail');
+    Route::get('products/detail/{id}', [ProductController::class, 'show'])->name('products.detail');
 
+    Route::get('distributors', [DistributorController::class, 'index'])->name('distributors.get');
+    Route::post('distributors', [DistributorController::class, 'store'])->name('distributors.add');
+    Route::delete('distributors/{id}', [DistributorController::class, 'destroy'])->name('distributors.add');
 
+    Route::get('distributors/new', [DistributorController::class, 'create'])->name('distributors.create');
+    Route::get('distributors/detail/{id}', [DistributorController::class, 'show'])->name('distributors.detail');
 
-    Route::get('distributors', function () {
-        return Inertia::render('Distributor', [
-            'filters' => Request::all('col', 'sort'), 
-        ]);
-    });
     Route::get('product-incoming', function () {
         return Inertia::render('ProductIn', [
             'filters' => Request::all('col', 'sort'), 

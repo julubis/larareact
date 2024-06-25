@@ -7,7 +7,6 @@ export default function Table({header, body, children, ...props}: PropsWithChild
     const { query } = usePage<{
         query: { col?: string; sort?: string };
       }>().props;
-    
     const [values, setValues] = useState(query || {col: '', sort: ''});
     
     const setSort = (col: string) => {
@@ -23,14 +22,12 @@ export default function Table({header, body, children, ...props}: PropsWithChild
             data.col = col;
             data.sort = 'asc';
         }
-        setValues(data)
-        router.get('', values, {preserveState: true})
+        setValues(data);
+        router.get('', values, {preserveState: true, preserveScroll: true});
     }
 
     return (
         <>
-        {
-            body.length ? 
             <div className="relative overflow-x-auto border border-gray-200 rounded-lg mb-2">
                 <table className="w-full text-sm text-left text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100">
@@ -67,13 +64,15 @@ export default function Table({header, body, children, ...props}: PropsWithChild
                             )
                         })
                         }
+                        {
+                            !body.length && 
+                            <tr className="bg-white border-b w-full">
+                                <td className="px-6 py-4 text-gray-800" colSpan={header.length}>{children}</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
-            </div> :
-            <div className="flex items-center justify-center bg-white border border-gray-200 rounded-lg mb-2">
-                {children}
             </div>
-        }
         </>
     )
 }

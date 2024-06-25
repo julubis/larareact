@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
+            $table->unsignedInteger('price');
             $table->unsignedInteger('stock')->default(0);
             $table->foreignId('shop_id');
             $table->foreignId('unit_id')->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unique(['name', 'shop_id'], 'shop_product');
             $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');
             $table->foreign('unit_id')->references('id')->on('product_units')->onDelete('cascade');
-            $table->foreign('category_id')->references('id')->on('shops')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('product_categories')->onDelete('cascade');
         });
     }
 

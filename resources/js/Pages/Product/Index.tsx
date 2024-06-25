@@ -1,13 +1,12 @@
 import { Add, ScanBarcode, Search } from "@/Components/Icons";
 import Pagination from "@/Components/Pagination";
-import Scanner from "@/Components/Scanner";
+// import Scanner from "@/Components/Scanner";
 import Table from "@/Components/Table";
-import AddProduct from "@/Layouts/AddProduct";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps, TableHeader } from "@/types";
 import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { Link, router, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
 interface Products {
     data: {
@@ -22,12 +21,12 @@ interface Products {
     last_page: number
 }
 
-export default function Product({ auth, products }: PageProps & {products: Products}) {
+export default function Index({ auth, products }: PageProps & {products: Products}) {
     const [isOpen, setIsOpen] = useState(false);
-    const [addProduct, setAddProduct] = useState(false);
     const [isScan, setIsScan] = useState(false);
     const { query } = usePage<{query: {search?: string}}>().props;
     const [search, setSearch] = useState(query.search);
+    const debounce = useRef<number | undefined>();
 
     const productsList = products.data.map(product => [
         `B${product.id.toString().padStart(3, '0')}`,
@@ -36,7 +35,7 @@ export default function Product({ auth, products }: PageProps & {products: Produ
         product.stock,
         product.unit ? product.unit : '-',
         product.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0}),
-        <Link href={`/products/${`B${product.id.toString().padStart(3, '0')}`}`} className="text-primary-600 hover:underline">Detail</Link>
+        <Link href={`/products/detail/${`B${product.id.toString().padStart(3, '0')}`}`} className="text-primary-600 hover:underline">Detail</Link>
     ]);
 
     const tableHeader: TableHeader[] = [
@@ -48,59 +47,63 @@ export default function Product({ auth, products }: PageProps & {products: Produ
         {name: 'price', label: 'Harga', sortable: true},
         {label: 'Aksi'},
     ];
+
+    const searchHandler  = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+        const search = e.target.value.trim();
+        if (debounce.current) {
+            clearTimeout(debounce.current);
+        }
+        debounce.current = window.setTimeout(() => {
+            router.get('', { search }, {
+                preserveState: true, preserveScroll: true
+            });
+        }, 500);
+    }
     
     return (
         <AuthLayout user={auth.user}>
-            {
-                addProduct ?
-                <AddProduct/> :
-                <div>
-                    <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Data Barang</h2>
-                    <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-2">
-                        <div className="relative">
-                            <input onChange={(e) => {
-                                setSearch(e.target.value);
-                                setTimeout(() => {
-                                    router.get('', {search: e.target.value.trim()}, {preserveState: true});
-                                }, 500);
-                            }} value={search} type="text" className="w-full sm:w-fit p-2.5 rounded-md ps-10" placeholder="Cari barang..." />
-                            <div className="absolute inset-y-0 start-2.5 flex items-center text-gray-500">
-                                <Search className="w-5 h-5"/>
-                            </div>
-                        </div>
-                        <div className="flex gap-3 justify-end">
-                            <button onClick={() => setIsOpen(true)} className="flex items-center btn-md gap-x-2 rounded-md bg-white hover:bg-primary-500 text-black hover:text-white shadow-md">
-                                    <ScanBarcode className="w-5 h-5"/>
-                                    Scan
-                                </button>
-                            <button onClick={() => setAddProduct(true)} className="btn-md flex gap-x-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white shadow-md">
-                                <Add className="w-5 h-5"/>
-                                Tambah
-                            </button>
+            <div>
+                <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Data Barang</h2>
+                <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-2">
+                    <div className="relative">
+                        <input onChange={searchHandler} value={search} type="text" className="w-full sm:w-fit p-2.5 rounded-md ps-10" placeholder="Cari barang..." />
+                        <div className="absolute inset-y-0 start-2.5 flex items-center text-gray-500">
+                            <Search className="w-5 h-5"/>
                         </div>
                     </div>
-                    <Table header={tableHeader} body={productsList}>
-                        <p className="text-lg text-black">Data barang tidak ditemukan</p>
-                    </Table>
-                    <div className="flex justify-center">
-                    <Pagination page={products.current_page} totalPage={products.last_page}/>
-                    <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                        <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/5 backdrop-blur-sm">
-                        <DialogPanel className="max-w-lg space-y-4 border p-12 bg-white shadow-md">
-                            <DialogTitle className="font-bold">Deactivate account</DialogTitle>
-                            <Description>This will permanently deactivate your account</Description>
-                            <p>Are you sure you want to deactivate your account? All of your data will be permanently removed.</p>
-                            <div className="flex gap-4">
-                                <button onClick={() => setIsScan(!isScan)}>scan</button>
-                                <div id="scanner"></div>
-                                {/* {isScan && <Scanner/>} */}
-                            </div>
-                        </DialogPanel>
-                        </div>
-                    </Dialog>
+                    <div className="flex gap-3 justify-end">
+                        <button onClick={() => setIsOpen(true)} className="flex items-center btn-md gap-x-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white shadow-md focus:ring-gray-200">
+                            <ScanBarcode className="w-5 h-5"/>
+                            Scan
+                        </button>
+                        <Link href="/products/new" className="btn-md flex gap-x-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white shadow-md focus:ring-primary-200">
+                            <Add className="w-5 h-5"/>
+                            Tambah
+                        </Link>
                     </div>
                 </div>
-            }
+                <Table header={tableHeader} body={productsList}>
+                    {search?.length ? 'Barang tidak ditemukan' : 'Barang masih kosong'}
+                </Table>
+                <div className="flex justify-center">
+                <Pagination page={products.current_page} totalPage={products.last_page}/>
+                <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+                    <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/60">
+                    <DialogPanel className="max-w-lg space-y-4 border p-12 bg-white shadow-md">
+                        <DialogTitle className="font-bold">Deactivate account</DialogTitle>
+                        <Description>This will permanently deactivate your account</Description>
+                        <p>Are you sure you want to deactivate your account? All of your data will be permanently removed.</p>
+                        <div className="flex gap-4">
+                            <button onClick={() => setIsScan(!isScan)}>scan</button>
+                            <div id="scanner"></div>
+                            {/* {isScan && <Scanner/>} */}
+                        </div>
+                    </DialogPanel>
+                    </div>
+                </Dialog>
+                </div>
+            </div>
         </AuthLayout>
     )
 }
