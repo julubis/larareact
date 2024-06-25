@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('distributors', [DistributorController::class, 'index'])->name('distributors.get');
     Route::post('distributors', [DistributorController::class, 'store'])->name('distributors.add');
-    Route::delete('distributors/{id}', [DistributorController::class, 'destroy'])->name('distributors.add');
+    Route::delete('distributors/{id}', [DistributorController::class, 'destroy'])->name('distributors.delete');
 
     Route::get('distributors/new', [DistributorController::class, 'create'])->name('distributors.create');
     Route::get('distributors/detail/{id}', [DistributorController::class, 'show'])->name('distributors.detail');
