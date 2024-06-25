@@ -1,5 +1,6 @@
 import { Add, ScanBarcode, Search } from "@/Components/Icons";
 import Pagination from "@/Components/Pagination";
+import Scanner from "@/Components/Scanner";
 // import Scanner from "@/Components/Scanner";
 import Table from "@/Components/Table";
 import AuthLayout from "@/Layouts/AuthLayout";
@@ -65,9 +66,9 @@ export default function Index({ auth, products }: PageProps & {products: Product
         <AuthLayout user={auth.user}>
             <div>
                 <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Data Barang</h2>
-                <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-2">
-                    <div className="relative">
-                        <input onChange={searchHandler} value={search} type="text" className="w-full sm:w-fit p-2.5 rounded-md ps-10" placeholder="Cari barang..." />
+                <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-3">
+                    <div className="relative w-full">
+                        <input onChange={searchHandler} value={search} type="text" className="w-full p-2.5 rounded-md ps-10" placeholder="Cari barang..." />
                         <div className="absolute inset-y-0 start-2.5 flex items-center text-gray-500">
                             <Search className="w-5 h-5"/>
                         </div>
@@ -97,7 +98,7 @@ export default function Index({ auth, products }: PageProps & {products: Product
                         <div className="flex gap-4">
                             <button onClick={() => setIsScan(!isScan)}>scan</button>
                             <div id="scanner"></div>
-                            {/* {isScan && <Scanner/>} */}
+                            {isScan && <Scanner/>}
                         </div>
                     </DialogPanel>
                     </div>

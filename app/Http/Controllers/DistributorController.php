@@ -12,7 +12,7 @@ class DistributorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($flash = ['success' => null, 'danger' => null])
     {
         $search = request()->query('search');
         $column = request()->query('col');
@@ -29,6 +29,7 @@ class DistributorController extends Controller
                 'col' => $column,
                 'sort' => $sort
             ],
+            'flash' => $flash
         ]);
     }
 
@@ -69,7 +70,7 @@ class DistributorController extends Controller
             'shop_id' => $shop_id
         ]);
 
-        return redirect('/distributors');
+        return $this->index(['success' => 'Berhasil menambahkan data distributor']);
     }
 
     /**
@@ -104,7 +105,34 @@ class DistributorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        if (!preg_match('/^D\d+$/', $id)) return abort(404);
+        $distributor_id = (int)substr($id, 1);
+        $shop_id = Auth::user()->shop_id;
+
+        $request->validate([
+            'name' => ['required', 'string', 'unique:distributors,name,NULL,id,shop_id,'.$shop_id.'id,id,'.$id],
+            'phone' => ['required', 'string'],
+            'address' => ['required', 'string']
+        ],[
+            'name.required' => 'Nama distributor wajib diisi',
+            'name.string' => 'Nama distributor wajib berupa teks',
+            'name.unique' => 'Nama distributor sudah ada',
+            'phone.required' => 'Nomor telepon wajib diisi',
+            'phone.string' => 'Nomor telepon wajib berupa teks',
+            'address.required' => 'Alamat wajib diisi',
+            'address.string' => 'Alamat wajib berupa teks',
+        ]);
+
+        Distributor::query()
+            ->where('id', '=', $distributor_id)
+            ->where('shop_id', '=', $shop_id)
+            ->update([
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'address' => $request->address
+            ]);
+        
+        return $this->index(['success' => 'Berhasil mengubah data distributor']);
     }
 
     /**

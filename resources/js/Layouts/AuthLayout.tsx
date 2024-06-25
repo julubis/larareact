@@ -101,7 +101,7 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                 </div>
             </aside>
 
-            <main className={`p-4 z-0 ${toggle ? '' : 'md:ml-64'} min-h-screen pt-20`}>
+            <main className={`p-4 z-0 ${toggle ? '' : 'md:ml-64'} h-full min-h-screen pt-20`}>
                 <span className={`md:hidden fixed top-0 left-0 h-full bg-black/60 backdrop-blur-sm w-full z-10 ${!toggle && 'hidden'}`} onClick={() => setToggle(false)}></span>
                 {children}
             </main>

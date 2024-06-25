@@ -18,7 +18,7 @@ interface Distributors {
     last_page: number
 }
 
-export default function Index({ auth, distributors }: PageProps & {distributors: Distributors}) {
+export default function Index({ auth, flash, distributors }: PageProps & {distributors: Distributors}) {
     const { query } = usePage<{query: {search?: string}}>().props;
     const [search, setSearch] = useState(query.search);
     const debounce = useRef<number | undefined>();
@@ -56,9 +56,9 @@ export default function Index({ auth, distributors }: PageProps & {distributors:
         <AuthLayout user={auth.user}>
             <div>
                 <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Data Distributor</h2>
-                <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-2">
-                    <div className="relative">
-                        <input onChange={searchHandler} value={search} type="text" className="w-full sm:w-fit p-2.5 rounded-md ps-10" placeholder="Cari distributor..." />
+                <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-3">
+                    <div className="relative w-full">
+                        <input onChange={searchHandler} value={search} type="text" className="w-full p-2.5 rounded-md ps-10" placeholder="Cari distributor..." />
                         <div className="absolute inset-y-0 start-2.5 flex items-center text-gray-500">
                             <Search className="w-5 h-5"/>
                         </div>
@@ -70,6 +70,9 @@ export default function Index({ auth, distributors }: PageProps & {distributors:
                         </Link>
                     </div>
                 </div>
+                {flash.success && <div className="p-3 mb-2 text-sm text-green-800 rounded-lg bg-green-50 border border-green-200" role="alert">
+                    {flash.success}
+                </div>}
                 <Table header={tableHeader} body={distributorsList}>
                     {search?.length ? 'Distributor tidak ditemukan' : 'Distributor masih kosong'}
                 </Table>

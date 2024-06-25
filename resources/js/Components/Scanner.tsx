@@ -1,30 +1,27 @@
-// import { Html5Qrcode, Html5QrcodeScanner } from 'html5-qrcode';
-// import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { Html5Qrcode, Html5QrcodeScanner, QrcodeSuccessCallback } from 'html5-qrcode';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
-// export default function Scanner({active = false}: PropsWithChildren<{active?: boolean}>) {
-//     const scannerRef = useRef(null);
+export default function Scanner() {
+    const scannerRef = useRef(null);
 
-//     useEffect(() => {
-//         const scanner = new Html5Qrcode('scanner');
+    const successCallback: QrcodeSuccessCallback = (text, result) =>  {
+        console.log(`text: ${text}, result: ${result}`)
+    }
 
-//         scanner.start({
-//             facingMode: 'user',
-//             {
-//                 qrbox: 250,
-//                 fps: 10
-//             }, ((text, result) => {
-//                 console.log(text, result)
-//             }, () => {})
-//         })
+    useEffect(() => {
+        const scanner = new Html5Qrcode('reader');
+        scanner.start({
+            facingMode: 'environment'
+        }, {
+            fps: 10,
+            qrbox: {width: 150, height: 75},
+            
+        }, successCallback, () => {});
 
-//         scanner.render((text, result) => {
-//             console.log(text, result)
-//         }, () => {})
+        return () => {
+            if (scanner.isScanning) scanner.stop();
+        }
+    }, []);
 
-//         return () => {
-//             scanner.clear();
-//         }
-//     }, []);
-
-//     return <div id="scanner" className="w-48 h-48" ref={scannerRef}></div>
-// }
+    return <div id="reader" className="w-full h-full border border-gray-200 z-50"></div>
+}
