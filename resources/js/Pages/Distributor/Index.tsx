@@ -45,7 +45,7 @@ export default function Index({ auth, distributors, flash }: PageProps & {distri
         }
         debounce.current = window.setTimeout(() => {
             router.get('', { search: e.target.value.trim() }, {
-                preserveState: true, preserveScroll: true, only: ['query']
+                preserveState: true, preserveScroll: true
             });
         }, 500);
     }
