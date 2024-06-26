@@ -1,20 +1,29 @@
-import { Html5Qrcode, Html5QrcodeScanner, QrcodeSuccessCallback } from 'html5-qrcode';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { Html5Qrcode, QrcodeSuccessCallback } from 'html5-qrcode';
+import { useEffect, useRef } from 'react';
 
 export default function Scanner() {
     const scannerRef = useRef(null);
 
     const successCallback: QrcodeSuccessCallback = (text, result) =>  {
-        console.log(`text: ${text}, result: ${result}`)
+        window.alert(`text: ${text}, result: ${result}`)
     }
 
     useEffect(() => {
-        const scanner = new Html5Qrcode('reader');
+        const scanner = new Html5Qrcode('qrcode-reader');
         scanner.start({
             facingMode: 'environment'
         }, {
-            fps: 10,
-            qrbox: {width: 150, height: 75},
+            fps: 80,
+            // qrbox: 250
+            qrbox: (viewWidth, viewHeight) => {
+                const edgePercentage = 0.7;
+                const minEdge = Math.min(viewWidth, viewHeight);
+                const size = Math.floor(minEdge * edgePercentage);
+                return {
+                    width: size,
+                    height: size
+                }
+            }
             
         }, successCallback, () => {});
 
@@ -23,5 +32,5 @@ export default function Scanner() {
         }
     }, []);
 
-    return <div id="reader" className="w-full h-full border border-gray-200 z-50"></div>
+    return <div id="qrcode-reader" ref={scannerRef} className="w-96 h-96 border border-gray-200 z-50"></div>
 }

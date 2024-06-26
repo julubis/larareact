@@ -86,7 +86,7 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                             </Link>
                         </li>
                         <li>
-                            <Link href="/product-out" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url == '/product-out' ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
+                            <Link href="/product-out" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url.startsWith('/product-out') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Unarchive className="w-5 h-5"/>
                             Barang Keluar
                             </Link>

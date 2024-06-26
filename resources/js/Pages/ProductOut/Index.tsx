@@ -53,7 +53,7 @@ export default function Index({ auth, productOuts, flash }: PageProps & {product
     return (
         <AuthLayout user={auth.user}>
             <div>
-                <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Transaksi Barang Keluar</h2>
+                <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Data Barang Keluar</h2>
                 <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-3">
                     <div className="relative w-full">
                         <input onChange={searchHandler} value={search} type="text" className="w-full p-2.5 rounded-md ps-10" placeholder="Cari ID Transaksi..." />

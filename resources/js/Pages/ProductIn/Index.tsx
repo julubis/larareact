@@ -54,7 +54,7 @@ export default function Index({ auth, productIns, flash }: PageProps & {productI
     return (
         <AuthLayout user={auth.user}>
             <div>
-                <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Transaksi Barang Masuk</h2>
+                <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Data Barang Masuk</h2>
                 {date}
                 <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-3">
                     <div className="relative w-full">

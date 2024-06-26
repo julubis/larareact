@@ -93,12 +93,9 @@ export default function Index({ auth, products, flash }: PageProps & {products: 
                 <div className="flex justify-center">
                 <Pagination page={products.current_page} totalPage={products.last_page}/>
                 <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-                    <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black/60">
-                    <DialogPanel className="max-w-lg space-y-4 border p-12 bg-white shadow-md">
-                        <DialogTitle className="font-bold">Deactivate account</DialogTitle>
-                        <Description>This will permanently deactivate your account</Description>
-                        <p>Are you sure you want to deactivate your account? All of your data will be permanently removed.</p>
-                        <div className="flex gap-4">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/60">
+                    <DialogPanel className="">
+                        <div className="flex">
                             <button onClick={() => setIsScan(!isScan)}>scan</button>
                             <div id="scanner"></div>
                             {isScan && <Scanner/>}
