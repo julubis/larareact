@@ -1,5 +1,5 @@
 import { TableHeader } from "@/types";
-import { PropsWithChildren, ReactNode, useState } from "react";
+import { PropsWithChildren, ReactNode, useRef, useState } from "react";
 import { ArrowDown, ArrowUnfold, ArrowUp } from "./Icons";
 import { router, usePage, } from "@inertiajs/react";
 
@@ -8,6 +8,7 @@ export default function Table({header, body, children, ...props}: PropsWithChild
         query: { col?: string; sort?: string };
       }>().props;
     const [values, setValues] = useState(query || {col: '', sort: ''});
+    const debounce = useRef<number | undefined>();
     
     const setSort = (col: string) => {
         const data = values;
@@ -23,7 +24,12 @@ export default function Table({header, body, children, ...props}: PropsWithChild
             data.sort = 'asc';
         }
         setValues(data);
-        router.get('', values, {preserveState: true, preserveScroll: true});
+        if (debounce.current) {
+            clearTimeout(debounce.current);
+        }
+        debounce.current = window.setTimeout(() => {
+            router.get('', values, {preserveState: true, preserveScroll: true});
+        }, 100);
     }
 
     return (

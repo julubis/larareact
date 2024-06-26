@@ -29,7 +29,10 @@ class ProductController extends Controller
             ->leftJoin('product_categories as c', 'c.id', '=', 'products.category_id')
             ->where('products.shop_id', '=', $shop_id);
 
-        if($search) $products->where('products.name', 'like', '%'.$search.'%');
+        if($search) {
+            $products->where('products.name', 'like', '%'.$search.'%');
+            $products->where('products.code', 'like', '%'.$search.'%', 'or');
+        }
         if(preg_match('/^B\d{3,}$/', $search)) $products->where('products.id', 'like', (int)substr($search, 1), 'or');
 
         if(in_array($column, ['id', 'name', 'category', 'stock', 'unit', 'price']) && $sort && in_array($sort, ['asc', 'desc'])) {
@@ -75,29 +78,31 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $shop_id = Auth::user()->shop_id;
         $request->validate([
-            'name' => ['required', 'string', 'unique:products,name'],
-            'category.id' => ['numeric'],
-            'unit.id' => ['numeric'],
-            'category.name' => ['string'],
-            'unit.name' => ['string'],
-            'price' => ['required', 'numeric'],
-            'upc' => ['string'],
-            'description' => ['string'],
+            'name' => ['required', 'string', 'unique:products,name,NULL,id,shop_id,'.$shop_id],
+            'category.id' => ['numeric', 'nullable'],
+            'unit.id' => ['numeric', 'nullable'],
+            'category.name' => ['string', 'nullable'],
+            'unit.name' => ['string', 'nullable'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'code' => ['string', 'nullable'],
+            'description' => ['string', 'nullable']
         ],[
-            'name.required' => 'Nama wajib diisi',
-            'name.string' => 'Nama wajib berupa teks',
+            'name.required' => 'Nama barang wajib diisi',
+            'name.unique' => 'Nama barang sudah ada',
+            'name.string' => 'Nama barang wajib berupa teks',
             'price.required' => 'Harga wajib diisi',
             'price.numeric' => 'Harga wajib berupa angka',
-            'upc.string' => 'Barcode wajib berupa teks',
-            'description.string' => 'Deskripsi wajib berupa teks',
+            'price.min' => 'Harga minimal 0'
+            
         ]);
 
         $shop_id = Auth::user()->shop_id;
         $category_id = $request->category['id'];
         $unit_id = $request->unit['id'];
 
-        if ($category_id === 0) {
+        if (!$category_id && $request->category['name']) {
             $category = ProductCategory::create([
                 'name' => $request->category['name'],
                 'shop_id' => $shop_id
@@ -105,7 +110,7 @@ class ProductController extends Controller
             $category_id = $category->id;
         } 
 
-        if ($unit_id === 0) {
+        if (!$unit_id && $request->unit['name']) {
             $unit = ProductUnit::create([
                 'name' => $request->unit['name'],
                 'shop_id' => $shop_id
@@ -119,6 +124,7 @@ class ProductController extends Controller
             'unit_id' => $unit_id,
             'shop_id' => $shop_id,
             'price' => $request->price,
+            'code' => $request->code,
             'description' => $request->description
         ]);
 
@@ -154,11 +160,11 @@ class ProductController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'category' => [
-                    'id' => $product->category?->id,
+                    'id' => $product->category?->id || null,
                     'name' =>  $product->category?->name
                 ],
                 'unit' => [
-                    'id' => $product->unit?->id,
+                    'id' => $product->unit?->id || null,
                     'name' =>  $product->unit?->name
                 ],
                 'price' => $product->price,
@@ -187,22 +193,22 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if (!preg_match('/^P\d{3,}$/', $id)) return abort(404);
+        if (!preg_match('/^B\d{3,}$/', $id)) return abort(404);
         $product_id = (int)substr($id, 1);
         $shop_id = Auth::user()->shop_id;
 
         $request->validate([
             'name' => ['required', 'string', 'unique:products,name,NULL,id,shop_id,'.$shop_id.'id,id,'.$id],
-            'category.id' => ['numeric'],
-            'unit.id' => ['numeric'],
-            'category.name' => ['string'],
-            'unit.name' => ['string'],
-            'price' => ['required', 'numeric'],
-            'code' => ['string'],
-            'description' => ['string'],
+            'category.id' => ['numeric', 'nullable'],
+            'unit.id' => ['numeric', 'nullable'],
+            'category.name' => ['string', 'nullable'],
+            'unit.name' => ['string', 'nullable'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'code' => ['string', 'nullable'],
+            'description' => ['string', 'nullable'],
         ],[
-            'name.required' => 'Nama wajib diisi',
-            'name.string' => 'Nama wajib berupa teks',
+            'name.required' => 'Nama barang wajib diisi',
+            'name.string' => 'Nama barang wajib berupa teks',
             'price.required' => 'Harga wajib diisi',
             'price.numeric' => 'Harga wajib berupa angka',
             'category.name.string' => 'Kategori wajib berupa teks',
@@ -214,7 +220,7 @@ class ProductController extends Controller
         $category_id = $request->category['id'];
         $unit_id = $request->unit['id'];
 
-        if ($category_id === 0) {
+        if (!$category_id && $request->category['name']) {
             $category = ProductCategory::create([
                 'name' => $request->category['name'],
                 'shop_id' => $shop_id
@@ -222,7 +228,7 @@ class ProductController extends Controller
             $category_id = $category->id;
         } 
 
-        if ($unit_id === 0) {
+        if (!$unit_id && $request->unit['name']) {
             $unit = ProductUnit::create([
                 'name' => $request->unit['name'],
                 'shop_id' => $shop_id
@@ -238,6 +244,7 @@ class ProductController extends Controller
                 'category_id' => $category_id,
                 'unit_id' => $unit_id,
                 'shop_id' => $shop_id,
+                'code' => $request->code,
                 'price' => $request->price,
                 'description' => $request->description
             ]);
@@ -250,7 +257,7 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        if (!preg_match('/^P\d{3,}$/', $id)) return abort(404);
+        if (!preg_match('/^B\d{3,}$/', $id)) return abort(404);
         $product_id = (int)substr($id, 1);
         $shop_id = Auth::user()->shop_id;
 

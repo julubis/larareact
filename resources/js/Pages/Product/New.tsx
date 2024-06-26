@@ -6,8 +6,8 @@ import { PageProps } from "@/types";
 import AuthLayout from "@/Layouts/AuthLayout";
 
 export default function New({ auth, categories, units }: PageProps & {
-    categories: {id: number, name: string}[],
-    units: {id: number, name: string}[],
+    categories: {id: number | null, name: string}[],
+    units: {id: number | null, name: string}[],
 } ) {
     const [category, setCategory] = useState('');
     const [unit, setUnit] = useState('');
@@ -15,10 +15,10 @@ export default function New({ auth, categories, units }: PageProps & {
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
-        category: {id: 0, name: ''},
-        unit: {id: 0, name: ''},
-        price: '',
-        upc: '',
+        category: {id: null, name: ''},
+        unit: {id: null, name: ''},
+        price: '0',
+        code: '',
         description: ''
     });
 
@@ -42,17 +42,23 @@ export default function New({ auth, categories, units }: PageProps & {
         <AuthLayout user={auth.user}>
             <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-3">Tambah Barang Baru</h2>
             <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full gap-4 bg-white p-4 rounded-md">
+                <div className="sm:col-span-2 md:col-span-3">
+                    <p className="text-xl font-medium mb-2">Informasi Barang</p>
+                    <hr className="border border-gray-200"/>
+                </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Nama Barang</label>
                     <input value={data.name} onChange={(e) => setData('name', e.target.value)}  type="text" name="name" className="w-full rounded-md" autoFocus required />
+                    {errors.name && <p className="mt-1 text-xs text-red-600 ">{errors.name}</p>}
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Harga (Rp)</label>
                     <input value={data.price} onChange={(e) => setData('price', e.target.value)} min={0} type="number" name="price" className="w-full rounded-md" />
+                    {errors.price && <p className="mt-1 text-xs text-red-600 ">{errors.price}</p>}
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Kategori</label>
-                    <Combobox value={data.category} onChange={(value) => setData('category', {id: value?.id || 0, name: value?.name || ''})} onClose={() => setCategory('')}>
+                    <Combobox value={data.category} onChange={(value) => setData('category', {id: value?.id || null, name: value?.name || ''})} onClose={() => setCategory('')}>
                         <div className="relative">
                         <ComboboxInput
                             displayValue={(category: {name?: string}) => category?.name || ''}
@@ -88,10 +94,11 @@ export default function New({ auth, categories, units }: PageProps & {
                         ))}
                         </ComboboxOptions>
                     </Combobox>
+                    {errors.category && <p className="mt-1 text-xs text-red-600 ">{errors.category}</p>}
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Satuan</label>
-                    <Combobox value={data.unit} onChange={(value) => setData('unit', {id: value?.id || 0, name: value?.name || ''})} onClose={() => setUnit('')}>
+                    <Combobox value={data.unit} onChange={(value) => setData('unit', {id: value?.id || null, name: value?.name || ''})} onClose={() => setUnit('')}>
                         <div className="relative">
                         <ComboboxInput
                             displayValue={(unit: {name?: string}) => unit?.name || ''}
@@ -127,14 +134,17 @@ export default function New({ auth, categories, units }: PageProps & {
                         ))}
                         </ComboboxOptions>
                     </Combobox>
+                    {errors.unit && <p className="mt-1 text-xs text-red-600 ">{errors.unit}</p>}
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Barcode</label>
-                    <input value={data.upc} onChange={(e) => setData('upc', e.target.value)}  type="text" name="upc" className="w-full rounded-md" />
+                    <input value={data.code} onChange={(e) => setData('code', e.target.value)}  type="text" name="code" className="w-full rounded-md" />
+                    {errors.code && <p className="mt-1 text-xs text-red-600 ">{errors.code}</p>}
                 </div>
                 <div className="max-w-screen-sm sm:col-span-2">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Deskripsi</label>
                     <textarea value={data.description} onChange={(e) => setData('description', e.target.value)}  name="description" className="w-full rounded-md bg-gray-50 border border-gray-300" ></textarea>
+                    {errors.description && <p className="mt-1 text-xs text-red-600 ">{errors.description}</p>}
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
                     <Link href="/products" className="flex items-center btn-md gap-x-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white shadow-md focus:ring-gray-200"><Back className="w-5 h-5"/>Kembali</Link>
