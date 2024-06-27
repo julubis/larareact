@@ -6,7 +6,9 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductUnit;
 use Illuminate\Http\Request;
+use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 use function Laravel\Prompts\select;
@@ -88,7 +90,7 @@ class ProductController extends Controller
             'category.name' => ['string', 'nullable'],
             'unit.name' => ['string', 'nullable'],
             'price' => ['required', 'numeric', 'min:0'],
-            'code' => ['string', 'nullable'],
+            'code' => ['string', 'nullable', 'unique:products,code,NULL,id,shop_id,'.$shop_id],
             'description' => ['string', 'nullable']
         ],[
             'name.required' => 'Nama barang wajib diisi',
@@ -96,15 +98,15 @@ class ProductController extends Controller
             'name.string' => 'Nama barang wajib berupa teks',
             'price.required' => 'Harga wajib diisi',
             'price.numeric' => 'Harga wajib berupa angka',
-            'price.min' => 'Harga minimal 0'
-            
+            'price.min' => 'Harga minimal 0',
+            'code.unique' => 'Barcode barang sudah ada'
         ]);
 
         $shop_id = Auth::user()->shop_id;
         $category_id = $request->category['id'];
         $unit_id = $request->unit['id'];
 
-        if (!$category_id && $request->category['name']) {
+        if (isset($category_id, $request->category['name'])) {
             $category = ProductCategory::create([
                 'name' => $request->category['name'],
                 'shop_id' => $shop_id
@@ -112,7 +114,7 @@ class ProductController extends Controller
             $category_id = $category->id;
         } 
 
-        if (!$unit_id && $request->unit['name']) {
+        if (isset($unit_id, $request->unit['name'])) {
             $unit = ProductUnit::create([
                 'name' => $request->unit['name'],
                 'shop_id' => $shop_id
@@ -122,11 +124,11 @@ class ProductController extends Controller
 
         Product::create([
             'name' => $request->name,
-            'category_id' => $category_id,
-            'unit_id' => $unit_id,
+            'category_id' => $category_id ? $category_id: null,
+            'unit_id' => $unit_id ? $unit_id : null,
+            'code' => $request->code,
             'shop_id' => $shop_id,
             'price' => $request->price,
-            'code' => $request->code,
             'description' => $request->description
         ]);
 
@@ -217,7 +219,7 @@ class ProductController extends Controller
             'category.name' => ['string', 'nullable'],
             'unit.name' => ['string', 'nullable'],
             'price' => ['required', 'numeric', 'min:0'],
-            'code' => ['string', 'nullable'],
+            'code' => ['string', 'nullable', 'unique:products,code,NULL,id,shop_id,'.$shop_id],
             'description' => ['string', 'nullable'],
         ],[
             'name.required' => 'Nama barang wajib diisi',
@@ -227,6 +229,7 @@ class ProductController extends Controller
             'category.name.string' => 'Kategori wajib berupa teks',
             'unit.name.string' => 'Satuan wajib berupa teks',
             'code.string' => 'Barcode wajib berupa teks',
+            'code.unique' => 'Barcode barang sudah ada',
             'description.string' => 'Deskripsi wajib berupa teks',
         ]);
 

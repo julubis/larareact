@@ -19,7 +19,7 @@ export default function New({ auth, categories, units, barcode }: PageProps & {
         category: {id: 0, name: ''},
         unit: {id: 0, name: ''},
         price: '0',
-        code: barcode || '',
+        code: barcode,
         description: ''
     });
 
@@ -42,6 +42,7 @@ export default function New({ auth, categories, units, barcode }: PageProps & {
     return (
         <AuthLayout user={auth.user}>
             <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-3">Tambah Barang Baru</h2>
+
             <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full gap-4 bg-white p-4 rounded-md">
                 <div className="sm:col-span-2 md:col-span-3">
                     <p className="text-xl font-medium mb-2">Informasi Barang</p>
@@ -139,7 +140,7 @@ export default function New({ auth, categories, units, barcode }: PageProps & {
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Barcode</label>
-                    <input value={data.code} onChange={(e) => setData('code', e.target.value.trim())}  type="text" name="code" className="w-full rounded-md" />
+                    <input value={data.code} onChange={(e) => setData('code', e.target.value)} type="text" name="code" className="w-full rounded-md" />
                     {errors.code && <p className="mt-1 text-xs text-red-600 ">{errors.code}</p>}
                 </div>
                 <div className="max-w-screen-sm sm:col-span-2">
