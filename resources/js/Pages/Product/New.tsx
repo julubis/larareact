@@ -16,8 +16,8 @@ export default function New({ auth, categories, units, barcode }: PageProps & {
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
-        category: {id: null, name: ''},
-        unit: {id: null, name: ''},
+        category: {id: 0, name: ''},
+        unit: {id: 0, name: ''},
         price: '0',
         code: barcode || '',
         description: ''
@@ -59,7 +59,7 @@ export default function New({ auth, categories, units, barcode }: PageProps & {
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Kategori</label>
-                    <Combobox value={data.category} onChange={(value) => setData('category', {id: value?.id || null, name: value?.name || ''})} onClose={() => setCategory('')}>
+                    <Combobox value={data.category} onChange={(value) => setData('category', value ? {id: value.id, name: value.name}: {id:0, name:''})} onClose={() => setCategory('')}>
                         <div className="relative">
                         <ComboboxInput
                             displayValue={(category: {name?: string}) => category?.name || ''}
@@ -99,7 +99,7 @@ export default function New({ auth, categories, units, barcode }: PageProps & {
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Satuan</label>
-                    <Combobox value={data.unit} onChange={(value) => setData('unit', {id: value?.id || null, name: value?.name || ''})} onClose={() => setUnit('')}>
+                    <Combobox value={data.unit} onChange={(value) => setData('unit', value ? {id: value.id, name: value.name}: {id:0, name:''})} onClose={() => setUnit('')}>
                         <div className="relative">
                         <ComboboxInput
                             displayValue={(unit: {name?: string}) => unit?.name || ''}
