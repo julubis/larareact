@@ -40,8 +40,10 @@ export default function Scanner() {
                     height: size
                 }
             }
-        }, successCallback, () => {});
-
+        }, (text, result) =>  {
+            router.post('products/barcode', {code: text});
+            if (scanner.isScanning) scanner.stop();
+        }, () => {});
         return () => {
             if (scanner.isScanning) scanner.stop();
         }

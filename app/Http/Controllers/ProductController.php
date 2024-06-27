@@ -192,8 +192,8 @@ class ProductController extends Controller
         $product = Product::query()
             ->where('code', '=', $barcode)
             ->first('id');
-        if ($product) {
-            return redirect('/products/detail/'.sprintf("B-%03d", $product->id));
+        if ($product->id) {
+            return redirect('/products/detail/'.sprintf("B%03d", $product->id));
         }
        
         return redirect('/products/new?barcode='.$barcode)
