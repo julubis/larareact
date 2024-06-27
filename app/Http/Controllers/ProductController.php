@@ -162,14 +162,15 @@ class ProductController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'category' => [
-                    'id' => $product->category?->id || null,
+                    'id' => $product->category?->id,
                     'name' =>  $product->category?->name
                 ],
                 'unit' => [
-                    'id' => $product->unit?->id || null,
+                    'id' => $product->unit?->id,
                     'name' =>  $product->unit?->name
                 ],
                 'price' => $product->price,
+                'code' => $product->code,
                 'stock' => $product->stock,
                 'description' => $product->description,
             ];
@@ -192,7 +193,7 @@ class ProductController extends Controller
         $product = Product::query()
             ->where('code', '=', $barcode)
             ->first('id');
-        if ($product->id) {
+        if ($product) {
             return redirect('/products/detail/'.sprintf("B%03d", $product->id));
         }
        

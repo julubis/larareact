@@ -102,7 +102,7 @@ export default function Index({ auth, products, flash }: PageProps & {products: 
                                 <p className="text-gray-100 font-medium text-md">Tempatkan barcode ke dalam kotak</p>
                             </div>
                             <button onClick={() => setIsOpen(false)} className="absolute bg-white/50 z-50 top-4 right-4 rounded-full text-center w-10 h-10">x</button>
-                            {isOpen && <Scanner/>}
+                            {isOpen && <Scanner updateData={setIsOpen}/>}
                         </div>
                     </DialogPanel>
                     </div>

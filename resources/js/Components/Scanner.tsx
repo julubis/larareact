@@ -1,13 +1,13 @@
 import { router } from '@inertiajs/react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats, QrcodeSuccessCallback } from 'html5-qrcode';
-import { useEffect, useRef } from 'react';
+import { PropsWithChildren, useEffect, useRef } from 'react';
 
-export default function Scanner() {
+export default function Scanner({updateData}: PropsWithChildren & {updateData: (data: boolean) => void}) {
     const scannerRef = useRef(null);
 
-    const successCallback: QrcodeSuccessCallback = (text, result) =>  {
-        router.post('products/barcode', {code: text});
-    }
+    // const successCallback: QrcodeSuccessCallback = (text, result) =>  {
+    //     router.post('products/barcode', {code: text});
+    // }
 
     useEffect(() => {
         const support = [
@@ -41,8 +41,8 @@ export default function Scanner() {
                 }
             }
         }, (text, result) =>  {
+            updateData(false);
             router.post('products/barcode', {code: text});
-            if (scanner.isScanning) scanner.stop();
         }, () => {});
         return () => {
             if (scanner.isScanning) scanner.stop();

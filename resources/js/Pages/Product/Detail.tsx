@@ -9,13 +9,13 @@ interface Product {
     id: number
     name: string
     category: {
-        id?: number | null,
-        name?: string
+        id: number,
+        name: string
     }
     stock: number
     unit: {
-        id?: number | null,
-        name?: string
+        id: number,
+        name: string
     }
     code: string
     price: number | string
@@ -29,10 +29,10 @@ export default function Detail({ auth, product, categories, units }: PageProps &
     const [isEdit, setIsEdit] = useState(false);
     const { data, setData, put, processing, errors, reset } = useForm({
         name: product.name,
-        category: {id: product.category.id || null, name: product.category.name},
-        unit: {id: product.unit.id || null, name: product.unit.name},
+        category: {id: product.category.id, name: product.category.name},
+        unit: {id: product.unit.id, name: product.unit.name},
         price: product.price,
-        code: product.code,
+        code: product.code || '',
         description: product.description
     });
 
@@ -59,6 +59,8 @@ export default function Detail({ auth, product, categories, units }: PageProps &
     return (
         <AuthLayout user={auth.user}>
             <h2 className="font-semibold text-gray-800 text-2xl mb-6">Detail Barang</h2>
+            {JSON.stringify(data)}
+            {JSON.stringify(errors)}
             <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full gap-4 bg-white p-4 rounded-md">
                 <div className="sm:col-span-2 md:col-span-3">
                     <p className="text-xl font-medium mb-2">Informasi Barang</p>
@@ -76,7 +78,7 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Kategori</label>
-                    {isEdit ? <Combobox value={data.category} onChange={(value) => setData('category', {id: value?.id || null, name: value?.name || ''})} onClose={() => setCategory('')}>
+                    {isEdit ? <Combobox value={data.category} onChange={(value) => setData('category', value ? {id: value.id, name: value?.name || ''}: {id: 0, name: ''})} onClose={() => setCategory('')}>
                         <div className="relative">
                         <ComboboxInput
                             displayValue={(category: {name?: string}) => category?.name || ''}
@@ -116,7 +118,7 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Satuan</label>
-                    {isEdit ? <Combobox value={data.unit} onChange={(value) => setData('unit', {id: value?.id || null, name: value?.name || ''})} onClose={() => setUnit('')}>
+                    {isEdit ? <Combobox value={data.unit} onChange={(value) => setData('unit', value ? {id: value.id, name: value.name} : {id: 0, name: ''})} onClose={() => setUnit('')}>
                         <div className="relative">
                         <ComboboxInput
                             displayValue={(unit: {name?: string}) => unit?.name || ''}
@@ -156,7 +158,7 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                 </div>
                 <div className="max-w-screen-sm">
                     <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Barcode</label>
-                    {isEdit ? <input value={data.code} onChange={(e) => setData('code', e.target.value)} type="text" name="name" className="w-full rounded-md" autoFocus /> :  <p className="w-full text-lg text-gray-900">{product.code || '-'}</p>}
+                    {isEdit ? <input value={data.code} onChange={(e) => setData('code', e.target.value.trim())} type="text" name="name" className="w-full rounded-md" autoFocus /> :  <p className="w-full text-lg text-gray-900">{product.code || '-'}</p>}
                     {errors.code && <p className="mt-1 text-xs text-red-600 ">{errors.code}</p>}
                 </div>
                 <div className="max-w-screen-sm">
