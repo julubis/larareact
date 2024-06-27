@@ -10,7 +10,6 @@ interface ProductOuts {
     data: {
         id: number
         date: string
-        type: string
         total_price: number
     }[]
     current_page: number
@@ -24,16 +23,14 @@ export default function Index({ auth, productOuts, flash }: PageProps & {product
 
     const productInList = productOuts.data.map(productOut => [
         `BK${productOut.id.toString().padStart(3, '0')}`,
-        productOut.date,
-        productOut.type,
-        productOut.total_price,
+        new Date(productOut.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}),
+        productOut.total_price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0}),
         <Link href={`/product-out/detail/${`BK${productOut.id.toString().padStart(3, '0')}`}`} className="text-primary-600 hover:underline">Detail</Link>
     ]);
 
     const tableHeader: TableHeader[] = [
         {name: 'id', label: 'ID Transaksi', sortable: true},
         {name: 'date', label: 'Tanggal', sortable: true},
-        {name: 'distributor', label: 'Status'},
         {name: 'total_price', label: 'Total Harga'},
         {label: 'Aksi'},
     ];
@@ -62,7 +59,7 @@ export default function Index({ auth, productOuts, flash }: PageProps & {product
                         </div>
                     </div>
                     <div className="flex justify-end">
-                        <Link href="/distributors/new" className="btn-md flex gap-x-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white shadow-md focus:ring-primary-200">
+                        <Link href="/product-out/new" className="btn-md flex gap-x-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white shadow-md focus:ring-primary-200">
                             <Add className="w-5 h-5"/>
                             Tambah
                         </Link>

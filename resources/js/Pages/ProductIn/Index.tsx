@@ -25,7 +25,7 @@ export default function Index({ auth, productIns, flash }: PageProps & {productI
 
     const productInList = productIns.data.map(productIn => [
         `BM${productIn.id.toString().padStart(3, '0')}`,
-        productIn.date,
+        new Date(productIn.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}),
         productIn.distributor,
         productIn.total_price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0}),
         <Link href={`/product-in/detail/${`BM${productIn.id.toString().padStart(3, '0')}`}`} className="text-primary-600 hover:underline">Detail</Link>

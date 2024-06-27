@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductOut;
+use App\Models\ProductOutDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -40,7 +42,18 @@ class ProductOutController extends Controller
      */
     public function create()
     {
-        //
+        $product = request()->query('product');
+
+        $shop_id = Auth::user()->shop_id;
+        $products = Product::query()
+            ->select('id', 'name', 'stock', 'price')
+            ->where('shop_id', $shop_id);
+
+        if ($products) $products->where('name', 'like', '%'.$product.'%');
+
+        return Inertia::render('ProductOut/New', [
+            'products' => $products->take(5)->get()
+        ]);
     }
 
     /**
@@ -48,7 +61,47 @@ class ProductOutController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $shop_id = Auth::user()->shop_id;
+        $request->validate([
+            'date' => ['required', 'date'],
+            'products.*.id' => ['numeric', 'min:1'],
+            'products.*.quantity' => ['numeric', 'min:1'],
+        ],[
+            'date.required' => 'Tanggal wajib diisi',
+            'product.*.id.min' => 'Barang wajib diisi',
+            'product.*.quantity.min' => 'Jumlah barang minimal 1',
+        ]);
+
+        $shop_id = Auth::user()->shop_id;
+        $date = $request->date;
+        $products = $request->products;
+
+        $product_out = ProductOut::create([
+            'date' => $date,
+            'shop_id' => $shop_id,
+            'total_price' => 0
+        ]);
+
+        $total_price = 0;
+
+        foreach ($products as $product) {
+            $prod = Product::find($product['id']);
+            ProductOutDetail::create([
+                'product_out_id' => $product_out->id,
+                'product_id' => $product['id'],
+                'price' => $prod->price,
+                'quantity' => $product['quantity'],
+                'total_price' => $prod->price * $product['quantity']
+            ]);
+            $total_price += $prod->price * $product['quantity'];
+            $prod->stock -= $product['quantity'];
+            $prod->save();
+        }
+
+        $product_out->total_price = $total_price;
+        $product_out->save();
+
+        return redirect('/product-out')->with(['success' => 'Berhasil menambah data barang keluar']);
     }
 
     /**
@@ -56,7 +109,39 @@ class ProductOutController extends Controller
      */
     public function show(string $id)
     {
-        //
+        if (!preg_match('/^BK\d{3,}$/', $id)) return abort(404);
+        $product_out_id = (int)substr($id, 2);
+        $shop_id = Auth::user()->shop_id;
+
+        $product_out = ProductOut::with(['detail'])
+            ->where('id', '=', $product_out_id)
+            ->where('shop_id', '=', $shop_id)
+            ->first();
+
+        $products = [];
+
+        foreach ($product_out->detail as $detail) {
+            $data = [
+                'name' => $detail->product->name,
+                'quantity' => $detail->quantity,
+                'price' => $detail->price,
+                'total_price' => $detail->total_price
+            ];
+            array_push($products, $data);
+        }
+        
+        if ($product_out) {
+            $product_out = [
+                'id' => $product_out->id,
+                'date' => $product_out->date,
+                'total_price' => $product_out->total_price,
+                'products' => $products,
+            ];
+        }
+        
+        return Inertia::render('ProductOut/Detail', [
+            'productOut' => $product_out
+        ]);
     }
 
     /**

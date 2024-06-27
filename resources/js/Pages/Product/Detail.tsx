@@ -65,17 +65,17 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                     <hr className="border border-gray-200"/>
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-900 ${isEdit && "after:content-['*'] after:text-red-500"}`}> Nama Barang</label>
-                    {isEdit ? <input value={data.name} onChange={(e) => setData('name', e.target.value)} type="text" name="name" className="w-full rounded-md" autoFocus /> : <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product.name}</div>}
+                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-600 ${isEdit && "after:content-['*'] after:text-red-500"}`}> Nama Barang</label>
+                    {isEdit ? <input value={data.name} onChange={(e) => setData('name', e.target.value)} type="text" name="name" className="w-full rounded-md" autoFocus /> : <p className="w-full text-lg text-gray-900">{product.name}</p>}
                     {errors.name && <p className="mt-1 text-xs text-red-600 ">{errors.name}</p>}
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-900 ${isEdit && "after:content-['*'] after:text-red-500"}`}>Harga</label>
-                    {isEdit ? <input value={data.price} onChange={(e) => setData('price', e.target.value)} type="number" name="price" className="w-full rounded-md" /> : <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0})}</div>}
+                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-600 ${isEdit && "after:content-['*'] after:text-red-500"}`}>Harga</label>
+                    {isEdit ? <input value={data.price} onChange={(e) => setData('price', e.target.value)} type="number" name="price" className="w-full rounded-md" /> : <p className="w-full text-lg text-gray-900">{product.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0})}</p>}
                     {errors.price && <p className="mt-1 text-xs text-red-600 ">{errors.price}</p>}
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Kategori</label>
+                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Kategori</label>
                     {isEdit ? <Combobox value={data.category} onChange={(value) => setData('category', {id: value?.id || null, name: value?.name || ''})} onClose={() => setCategory('')}>
                         <div className="relative">
                         <ComboboxInput
@@ -111,11 +111,11 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                             </ComboboxOption>
                         ))}
                         </ComboboxOptions>
-                    </Combobox> : <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product.category.name || '-'}</div>}
+                    </Combobox> : <p className="w-full text-lg text-gray-900">{product.category.name || '-'}</p>}
                     {errors.category && <p className="mt-1 text-xs text-red-600 ">{errors.category}</p>}
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Satuan</label>
+                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Satuan</label>
                     {isEdit ? <Combobox value={data.unit} onChange={(value) => setData('unit', {id: value?.id || null, name: value?.name || ''})} onClose={() => setUnit('')}>
                         <div className="relative">
                         <ComboboxInput
@@ -151,21 +151,21 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                             </ComboboxOption>
                         ))}
                         </ComboboxOptions>
-                    </Combobox> : <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product.unit.name || '-'}</div>}
+                    </Combobox> : <p className="w-full text-lg text-gray-900">{product.unit.name || '-'}</p>}
                     {errors.unit && <p className="mt-1 text-xs text-red-600 ">{errors.unit}</p>}
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900">Barcode</label>
-                    {isEdit ? <input value={data.code} onChange={(e) => setData('code', e.target.value)} type="text" name="name" className="w-full rounded-md" autoFocus /> : <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product.code || '-'}</div>}
+                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Barcode</label>
+                    {isEdit ? <input value={data.code} onChange={(e) => setData('code', e.target.value)} type="text" name="name" className="w-full rounded-md" autoFocus /> :  <p className="w-full text-lg text-gray-900">{product.code || '-'}</p>}
                     {errors.code && <p className="mt-1 text-xs text-red-600 ">{errors.code}</p>}
                 </div>
                 <div className="max-w-screen-sm">
-                    {!isEdit && <><label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Stok</label>
-                    <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product?.stock}</div></>}
+                    {!isEdit && <><label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Stok</label>
+                    <p className="w-full text-lg text-gray-900">{product.stock}</p></>}
                 </div>
                 <div className="max-w-screen-sm sm:col-span-2">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 ">Deskripsi</label>
-                    {isEdit ? <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} name="description" cols={5} className="w-full min-h-24 rounded-md text-sm border border-gray-300 bg-slate-50"></textarea> : <div className="w-full rounded-md text-sm border border-gray-300 p-2">{product.description || '-'}</div>}
+                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600 ">Deskripsi</label>
+                    {isEdit ? <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} name="description" cols={5} className="w-full min-h-24 rounded-md text-sm border border-gray-300 bg-slate-50"></textarea> : <p className="w-full text-lg text-gray-900">{product.description || '-'}</p>}
                     {errors.description && <p className="mt-1 text-xs text-red-600 ">{errors.description}</p>}
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
@@ -178,7 +178,7 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                     }
                     {isEdit && (
                         <>
-                        <button type="button" onClick={() => setIsEdit(false)} className="flex gap-2 mb-2 text-black border border-gray-300 bg-white hover:text-white hover:bg-primary-500 focus:ring focus:outline-none focus:border-none focus:ring-primary-300 font-medium rounded-md text-sm px-5 py-2.5 text-center"><Back className="w-5 h-5"/>Batal</button><button type="submit" className="flex gap-2 mb-2 text-white bg-primary-500 hover:bg-primary-600 focus:ring focus:outline-none focus:border-none focus:ring-primary-300 font-medium rounded-md text-sm px-5 py-2.5 text-center disabled:cursor-not-allowed disabled:bg-primary-400"><Save className="w-5 h-5"/> Simpan</button>
+                        <button type="button" onClick={() => setIsEdit(false)} className="flex gap-2 mb-2 text-white bg-gray-500 hover:bg-gray-600 focus:ring focus:outline-none focus:border-none focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 text-center disabled:cursor-not-allowed disabled:bg-gray-400"><Back className="w-5 h-5"/>Batal</button><button type="submit" className="flex gap-2 mb-2 text-white bg-primary-500 hover:bg-primary-600 focus:ring focus:outline-none focus:border-none focus:ring-primary-300 font-medium rounded-md text-sm px-5 py-2.5 text-center disabled:cursor-not-allowed disabled:bg-primary-400"><Save className="w-5 h-5"/> Simpan</button>
                         </>)}
                 </div>
             </form>

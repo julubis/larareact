@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_outs', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['sold', 'returned', 'damaged']);
+            // $table->enum('type', ['sold', 'returned', 'damaged']);
             $table->date('date');
             $table->unsignedInteger('total_price');
             $table->foreignId('shop_id');

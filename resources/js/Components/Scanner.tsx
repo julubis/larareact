@@ -1,4 +1,4 @@
-import { Html5Qrcode, QrcodeSuccessCallback } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeScanType, Html5QrcodeSupportedFormats, QrcodeSuccessCallback } from 'html5-qrcode';
 import { useEffect, useRef } from 'react';
 
 export default function Scanner() {
@@ -9,14 +9,29 @@ export default function Scanner() {
     }
 
     useEffect(() => {
-        const scanner = new Html5Qrcode('qrcode-reader');
+        const support = [
+            Html5QrcodeSupportedFormats.EAN_13,
+            Html5QrcodeSupportedFormats.CODE_128,
+            Html5QrcodeSupportedFormats.CODE_39,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.UPC_E,
+            Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+            Html5QrcodeSupportedFormats.ITF,
+            Html5QrcodeSupportedFormats.CODABAR
+        ]
+        
+        const scanner = new Html5Qrcode('qrcode-reader', {
+            formatsToSupport: support, 
+            verbose: false
+        });
         scanner.start({
             facingMode: 'environment'
         }, {
-            fps: 80,
+            fps: 10,
             // qrbox: 250
+            // qrbox: {width:400, height: 100}
             qrbox: (viewWidth, viewHeight) => {
-                const edgePercentage = 0.7;
+                const edgePercentage = 0.6;
                 const minEdge = Math.min(viewWidth, viewHeight);
                 const size = Math.floor(minEdge * edgePercentage);
                 return {
@@ -24,7 +39,6 @@ export default function Scanner() {
                     height: size
                 }
             }
-            
         }, successCallback, () => {});
 
         return () => {
@@ -32,5 +46,5 @@ export default function Scanner() {
         }
     }, []);
 
-    return <div id="qrcode-reader" ref={scannerRef} className="w-96 h-96 border border-gray-200 z-50"></div>
+    return <div id="qrcode-reader" ref={scannerRef} className="max-w-screen-sm h-full w-full rounded-xl"></div>
 }

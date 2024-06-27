@@ -116,7 +116,7 @@ class ProductInController extends Controller
         $product_in->total_price = $total_price;
         $product_in->save();
 
-        return redirect('/product-in')->with(['success' => 'Berhasil menambah data transaksi']);
+        return redirect('/product-in')->with(['success' => 'Berhasil menambah data barang masuk']);
     }
 
     /**

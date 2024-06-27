@@ -92,13 +92,17 @@ export default function Index({ auth, products, flash }: PageProps & {products: 
                 </Table>
                 <div className="flex justify-center">
                 <Pagination page={products.current_page} totalPage={products.last_page}/>
-                <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+
+                <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="fixed z-40">
                     <div className="fixed inset-0 flex items-center justify-center bg-black/60">
-                    <DialogPanel className="">
-                        <div className="flex">
-                            <button onClick={() => setIsScan(!isScan)}>scan</button>
-                            <div id="scanner"></div>
-                            {isScan && <Scanner/>}
+                    <DialogPanel className="max-w-screen-sm h-fit w-full">
+                        <div className="flex flex-col relative">
+                            <div className="absolute z-50 text-center left-1/2 -translate-x-1/2 w-full mt-4">
+                                <p className="text-white font-bold text-lg">Arahkan kamera ke barcode</p>
+                                <p className="text-gray-100 font-medium text-md">Tempatkan barcode ke dalam kotak</p>
+                            </div>
+                            <button onClick={() => setIsOpen(false)} className="absolute bg-white/50 z-50 top-4 right-4 rounded-full text-center w-10 h-10">x</button>
+                            {isOpen && <Scanner/>}
                         </div>
                     </DialogPanel>
                     </div>
