@@ -58,6 +58,7 @@ class ProductController extends Controller
     {
         $category = request()->query('category');
         $unit = request()->query('unit');
+        $barcode = request()->query('barcode');
 
         $shop_id = Auth::user()->shop_id;
         $categories = ProductCategory::query()
@@ -70,6 +71,7 @@ class ProductController extends Controller
         return Inertia::render('Product/New', [
             'categories' => $categories->take(5)->get(),
             'units' => $units->take(5)->get(),
+            'barcode' => $barcode
         ]);
     }
 
@@ -183,9 +185,19 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function barcode(Request $request)
     {
-        //
+        $request->validate(['code' => ['required', 'string']]);
+        $barcode = $request->code;
+        $product = Product::query()
+            ->where('code', '=', $barcode)
+            ->first('id');
+        if ($product) {
+            return redirect('/products/detail/'.sprintf("B-%03d", $product->id));
+        }
+       
+        return redirect('/products/new?barcode='.$barcode)
+            ->with(['error' => 'Barang tidak ditemukan, silahkan tambah barang']);
     }
 
     /**

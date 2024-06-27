@@ -5,9 +5,10 @@ import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOption
 import { PageProps } from "@/types";
 import AuthLayout from "@/Layouts/AuthLayout";
 
-export default function New({ auth, categories, units }: PageProps & {
+export default function New({ auth, categories, units, barcode }: PageProps & {
     categories: {id: number | null, name: string}[],
     units: {id: number | null, name: string}[],
+    barcode: string
 } ) {
     const [category, setCategory] = useState('');
     const [unit, setUnit] = useState('');
@@ -18,7 +19,7 @@ export default function New({ auth, categories, units }: PageProps & {
         category: {id: null, name: ''},
         unit: {id: null, name: ''},
         price: '0',
-        code: '',
+        code: barcode,
         description: ''
     });
 

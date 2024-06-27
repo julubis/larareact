@@ -1,11 +1,12 @@
-import { Html5Qrcode, Html5QrcodeScanType, Html5QrcodeSupportedFormats, QrcodeSuccessCallback } from 'html5-qrcode';
+import { router } from '@inertiajs/react';
+import { Html5Qrcode, Html5QrcodeSupportedFormats, QrcodeSuccessCallback } from 'html5-qrcode';
 import { useEffect, useRef } from 'react';
 
 export default function Scanner() {
     const scannerRef = useRef(null);
 
     const successCallback: QrcodeSuccessCallback = (text, result) =>  {
-        window.alert(`text: ${text}, result: ${result}`)
+        router.post('products/barcode', {code: text});
     }
 
     useEffect(() => {

@@ -30,7 +30,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            return redirect('dashboard');
+            return redirect('products');
         }
 
         return back()->withErrors([

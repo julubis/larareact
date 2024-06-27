@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
@@ -13,13 +14,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+    return redirect('/products');
+})->middleware('auth');
 
 // Route::get('/masuk', function () {
 //     return Inertia::render('Login');
@@ -30,9 +26,9 @@ Route::get('/', function () {
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('Home');
-    });
+    // Route::get('dashboard', function () {
+    //     return Inertia::render('Home');
+    // });
     Route::get('products', [ProductController::class, 'index'])->name('products.get');
     Route::post('products', [ProductController::class, 'store'])->name('products.add');
     Route::put('products/{id}', [ProductController::class, 'update'])->name('products.edit');
@@ -40,6 +36,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('products/new', [ProductController::class, 'create'])->name('products.create');
     Route::get('products/detail/{id}', [ProductController::class, 'show'])->name('products.detail');
+
+    Route::get('products/barcode', [ProductController::class, 'barcode'])->name('products.barcode');
 
     Route::get('distributors', [DistributorController::class, 'index'])->name('distributors.get');
     Route::post('distributors', [DistributorController::class, 'store'])->name('distributors.add');
@@ -65,17 +63,20 @@ Route::middleware('auth')->group(function () {
     Route::get('product-out/new', [ProductOutController::class, 'create'])->name('product-out.create');
     Route::get('product-out/detail/{id}', [ProductOutController::class, 'show'])->name('product-out.detail');
 
-    Route::get('account', [ProductOutController::class, 'index'])->name('account.get');
-    Route::put('account', [DistributorController::class, 'update'])->name('account.edit');   
+    Route::get('account', [AccountController::class, 'index'])->name('account.get');
+    Route::put('update-profile', [AccountController::class, 'update_profile'])->name('account.update-profile');  
+    Route::put('update-password', [AccountController::class, 'update_password'])->name('account.update-password'); 
+    
+    Route::post('logout', [Session::class, 'destroy'])->name('logout');
+    
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Route::get()
-    Route::post('logout', [Session::class, 'destroy'])->name('logout');
 });
 
 Route::middleware('guest')->group(function () {

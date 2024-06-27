@@ -46,7 +46,7 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                                 </div>
                                 <ul className="py-2" aria-labelledby="user-menu-button">
                                     <li className="text-gray-700">
-                                        <Link href="/account" className="w-full items-center px-4 py-2 text-sm hover:bg-gray-100 flex gap-2"><Person className="w-4 h-4"/>Profil</Link>
+                                        <Link href="/account" className="w-full items-center px-4 py-2 text-sm hover:bg-gray-100 flex gap-2"><Person className="w-4 h-4"/>Akun saya</Link>
                                     </li>
                                     <li>
                                         <Link href={route('logout')} method="post" as="button" className="text-start items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex gap-2"><Logout className="w-4 h-4"/>Keluar</Link>
@@ -61,12 +61,12 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
             <aside className={`fixed z-20 top-0 left-0 w-64 h-screen pt-14 transition-transform ${toggle ? 'translate-x-0 md:-translate-x-full' : '-translate-x-full md:translate-x-0'} bg-white border-r border-gray-200`} aria-label="Sidenav" id="drawer-navigation">
                 <div className="overflow-y-auto py-5 px-3 h-full bg-white">
                     <ul className="space-y-2">
-                        <li>
+                        {/* <li>
                             <Link href="/dashboard" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/dashboard') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Dashboard className="w-5 h-5"/>
                             Dashboard
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link href="/products" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/products') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Box className="w-5 h-5"/>
