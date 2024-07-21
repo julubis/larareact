@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\Request;
-use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class AccountController extends Controller
@@ -57,17 +55,8 @@ class AccountController extends Controller
     public function update_profile(ProfileUpdateRequest $request)
     {
         $request->user()->fill($request->validated());
-
-        // if ($request->user()->isDirty('email')) {
-        //     $request->user()->email_verified_at = null;
-        // }
-
         $request->user()->save();
-
-        // return Redirect::route('profile.edit');
-
         return redirect('/account')->with(['success' => 'Berhasil mengubah data akun']);
-        // return Redirect::route('account.get')->with(['success' => 'Berhasil mengubah data akun']);
     }
 
     /**

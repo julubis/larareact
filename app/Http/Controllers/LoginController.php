@@ -33,8 +33,6 @@ class LoginController extends Controller
             return redirect('products');
         }
 
-        return back()->withErrors([
-            'any' => 'Email atau kata sandi salah'
-        ]);
+        return redirect('/login')->with(['error' => 'Email atau kata sandi salah']);
     }
 }

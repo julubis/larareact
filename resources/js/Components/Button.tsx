@@ -1,25 +1,21 @@
-import { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import { ButtonHTMLAttributes, PropsWithChildren, ReactNode } from "react";
 
-export default function Button({className = '', children, size = 'md', colorScheme = 'primary',  disabled, ...props} :
+export default function Button({className = '', children, colorScheme = 'primary', icon, ...props} :
     ButtonHTMLAttributes<HTMLButtonElement> & 
     PropsWithChildren<{
-        size: 'sm' | 'md' | 'lg', 
-        colorScheme: 'primary' | 'secondary'
+        colorScheme?: 'primary' | 'secondary' | 'warning' | 'danger',
+        icon?: ReactNode
     }>) {
-    const sizes = {
-        sm: 'btn-sm',
-        md: 'btn-md',
-        lg: 'btn-lg',
-    }
     const colors = {
-        primary: `bg-primary-500 hover:bg-primary-600 focus:ring-primary-200`
+        primary: ' primary ',
+        secondary: ' secondary ',
+        warning: ' warning ',
+        danger: ' danger ',
     } 
 
     return (
-        <button 
-            {...props}
-            className={`text-white rounded-lg ${sizes[size]}`}
-        >
+        <button className={'btn' + colors[colorScheme] + className} {...props}>
+            {icon}
             {children}
         </button>
     )

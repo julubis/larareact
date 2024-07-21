@@ -1,3 +1,4 @@
+import Button from "@/Components/Button";
 import { Back, Pencil, Save, Trash } from "@/Components/Icons";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps } from "@/types";
@@ -13,7 +14,7 @@ interface Distributor {
 
 export default function Detail({ auth, distributor }: PageProps & {distributor: Distributor}) {
     const [isEdit, setIsEdit] = useState(false);
-    const { data, setData, put, processing, errors, reset } = useForm({
+    const { data, setData, put, processing, errors } = useForm({
         name: distributor.name,
         phone: distributor.phone,
         address: distributor.address
@@ -46,17 +47,17 @@ export default function Detail({ auth, distributor }: PageProps & {distributor: 
                     
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
-                    {!isEdit && (
+                    {
+                        isEdit ? 
                         <>
-                        <button onClick={() => setIsEdit(true)} className="flex items-center btn-md gap-x-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-white shadow-md focus:ring-yellow-200"><Pencil className="w-5 h-5"/>Edit</button>
-                        <Link href={`/distributors/D${distributor.id.toString().padStart(3, '0')}`} as="button" method="delete" className="flex items-center btn-md gap-x-2 rounded-md bg-red-500 hover:bg-red-600 text-white shadow-md focus:ring-red-200"><Trash className="h-5 w-5"/>Hapus</Link>
+                            <Button type="button" colorScheme="secondary" onClick={() => setIsEdit(false)} icon={<Back className="w-5 h-5"/>}>Batal</Button>
+                            <Button type="submit" icon={<Save className="w-5 h-5"/>} disabled={processing}>Simpan</Button>
+                        </> :
+                        <>
+                            <Button colorScheme="warning" type="button" onClick={() => setIsEdit(true)} icon={<Pencil className="w-5 h-5"/>}>Edit</Button>
+                            <Link href={`/distributors/D${distributor.id.toString().padStart(3, '0')}`} as="button" method="delete" type="button" className="btn danger"><Trash className="h-5 w-5"/>Hapus</Link>
                         </>
-                        )
                     }
-                    {isEdit && (
-                        <>
-                        <button type="button" onClick={() => setIsEdit(false)} className="flex gap-2 mb-2 text-white bg-gray-500 hover:bg-gray-600 focus:ring focus:outline-none focus:border-none focus:ring-gray-300 font-medium rounded-md text-sm px-5 py-2.5 text-center disabled:cursor-not-allowed disabled:bg-gray-400"><Back className="w-5 h-5"/>Batal</button><button type="submit" className="flex gap-2 mb-2 text-white bg-primary-500 hover:bg-primary-600 focus:ring focus:outline-none focus:border-none focus:ring-primary-300 font-medium rounded-md text-sm px-5 py-2.5 text-center disabled:cursor-not-allowed disabled:bg-primary-400"><Save className="w-5 h-5"/> Simpan</button>
-                        </>)}
                 </div>
             </form>
         </AuthLayout>

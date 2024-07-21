@@ -1,10 +1,12 @@
-import { Add, Search } from "@/Components/Icons";
+import Alert from "@/Components/Alert";
+import { Add } from "@/Components/Icons";
 import Pagination from "@/Components/Pagination";
+import SearchBox from "@/Components/SearchBox";
 import Table from "@/Components/Table";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps, TableHeader } from "@/types";
-import { Link, router, usePage } from "@inertiajs/react";
-import { ChangeEvent, useRef, useState } from "react";
+import { distributorIdFormat } from "@/utils/formats";
+import { Link, usePage } from "@inertiajs/react";
 
 interface Distributors {
     data: {
@@ -18,16 +20,14 @@ interface Distributors {
 }
 
 export default function Index({ auth, distributors, flash }: PageProps & {distributors: Distributors}) {
-    const { query } = usePage<{query: {search?: string}, flash: {type: string, message: string}}>().props;
-    const [search, setSearch] = useState(query.search);
-    const debounce = useRef<number | undefined>();
+    const { query } = usePage<{query: {search?: string}}>().props;
 
     const distributorsList = distributors.data.map(distributor => [
-        `D${distributor.id.toString().padStart(3, '0')}`,
+        distributorIdFormat(distributor.id),
         distributor.name,
         distributor.phone,
         distributor.address,
-        <Link href={`/distributors/detail/${`D${distributor.id.toString().padStart(3, '0')}`}`} className="text-primary-600 hover:underline">Detail</Link>
+        <Link href={`/distributors/detail/${distributorIdFormat(distributor.id)}`} className="text-primary-600 hover:underline">Detail</Link>
     ]);
 
     const tableHeader: TableHeader[] = [
@@ -37,45 +37,26 @@ export default function Index({ auth, distributors, flash }: PageProps & {distri
         {name: 'address', label: 'Alamat'},
         {label: 'Aksi'},
     ];
-
-    const searchHandler  = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-        if (debounce.current) {
-            clearTimeout(debounce.current);
-        }
-        debounce.current = window.setTimeout(() => {
-            router.get('', { search: e.target.value.trim() }, {
-                preserveState: true, preserveScroll: true
-            });
-        }, 500);
-    }
     
     return (
         <AuthLayout user={auth.user}>
             <div>
                 <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-2">Data Distributor</h2>
                 <div className="mb-2 flex sm:flex-row flex-col-reverse sm:justify-between gap-3">
-                    <div className="relative w-full">
-                        <input onChange={searchHandler} value={search} type="text" className="w-full p-2.5 rounded-md ps-10" placeholder="Cari distributor..." />
-                        <div className="absolute inset-y-0 start-2.5 flex items-center text-gray-500">
-                            <Search className="w-5 h-5"/>
-                        </div>
-                    </div>
+                    <SearchBox value={query.search} placeholder="Cari distributor..."/>
                     <div className="flex justify-end">
-                        <Link href="/distributors/new" className="btn-md flex gap-x-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white shadow-md focus:ring-primary-200">
+                        <Link href="/distributors/new" className="btn primary">
                             <Add className="w-5 h-5"/>
                             Tambah
                         </Link>
                     </div>
                 </div>
-                {flash.success && <div className="p-3 mb-2 text-sm text-green-800 rounded-lg bg-green-50 border border-green-200" role="alert">
-                    {flash.success}
-                </div>}
+                <Alert flash={flash}/>
                 <Table header={tableHeader} body={distributorsList}>
-                    {search?.length ? 'Distributor tidak ditemukan' : 'Distributor masih kosong'}
+                    {query.search?.length ? 'Distributor tidak ditemukan' : 'Distributor masih kosong'}
                 </Table>
                 <div className="flex justify-center">
-                <Pagination page={distributors.current_page} totalPage={distributors.last_page}/>
+                    <Pagination page={distributors.current_page} totalPage={distributors.last_page}/>
                 </div>
             </div>
         </AuthLayout>

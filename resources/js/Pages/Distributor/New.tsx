@@ -3,6 +3,7 @@ import { Link, useForm } from "@inertiajs/react";
 import { FormEventHandler } from "react";
 import { PageProps } from "@/types";
 import AuthLayout from "@/Layouts/AuthLayout";
+import Button from "@/Components/Button";
 
 export default function New({ auth }: PageProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -38,10 +39,9 @@ export default function New({ auth }: PageProps) {
                     <textarea value={data.address} onChange={(e) => setData('address', e.target.value)}  name="description" className="w-full rounded-md bg-gray-50 border border-gray-300" required></textarea>
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
-                    <Link href="/distributors" className="flex items-center btn-md gap-x-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white shadow-md focus:ring-gray-200"><Back className="w-5 h-5"/>Kembali</Link>
-                    <button type="submit" className="btn-md flex gap-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white shadow-md focus:ring-primary-200"><Save className="w-5 h-5"/> Simpan</button>
+                    <Link href="/products" className="btn secondary"><Back className="w-5 h-5"/>Kembali</Link>
+                    <Button icon={<Save className="w-5 h-5"/>} type="submit">Simpan</Button>
                 </div>
-                
             </form>
         </AuthLayout>
     )

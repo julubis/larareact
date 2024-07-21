@@ -219,7 +219,7 @@ class ProductController extends Controller
             'category.name' => ['string', 'nullable'],
             'unit.name' => ['string', 'nullable'],
             'price' => ['required', 'numeric', 'min:0'],
-            'code' => ['string', 'nullable', 'unique:products,code,NULL,id,shop_id,'.$shop_id],
+            'code' => ['string', 'nullable', 'unique:products,code,NULL,id,shop_id,'.$shop_id.'id,id,'.$id],
             'description' => ['string', 'nullable'],
         ],[
             'name.required' => 'Nama barang wajib diisi',

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->foreignId('shop_id');
-            // $table->enum('role', ['admin']);
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');

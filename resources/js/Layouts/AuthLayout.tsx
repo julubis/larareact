@@ -1,4 +1,4 @@
-import { Archive, Box, Dashboard, Groups, Logout, Person, Unarchive } from "@/Components/Icons";
+import { Archive, Box, Groups, Logout, Person, Unarchive } from "@/Components/Icons";
 import { User } from "@/types";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
@@ -61,12 +61,6 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
             <aside className={`fixed z-20 top-0 left-0 w-64 h-screen pt-14 transition-transform ${toggle ? 'translate-x-0 md:-translate-x-full' : '-translate-x-full md:translate-x-0'} bg-white border-r border-gray-200`} aria-label="Sidenav" id="drawer-navigation">
                 <div className="overflow-y-auto py-5 px-3 h-full bg-white">
                     <ul className="space-y-2">
-                        {/* <li>
-                            <Link href="/dashboard" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/dashboard') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
-                            <Dashboard className="w-5 h-5"/>
-                            Dashboard
-                            </Link>
-                        </li> */}
                         <li>
                             <Link href="/products" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/products') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Box className="w-5 h-5"/>
@@ -74,25 +68,25 @@ export default function AuthLayout({user, children}: PropsWithChildren<{user: Us
                             </Link>
                         </li>
                         <li>
-                            <Link href="/distributors" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url.startsWith('/distributors') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
+                            <Link href="/distributors" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/distributors') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Groups className="w-5 h-5"/>
                             Data Distributor
                             </Link>
                         </li>
                         <li>
-                            <Link href="/product-in" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url.startsWith('/product-in') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
+                            <Link href="/product-in" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/product-in') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Archive className="w-5 h-5"/>
                             Barang Masuk
                             </Link>
                         </li>
                         <li>
-                            <Link href="/product-out" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url.startsWith('/product-out') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
+                            <Link href="/product-out" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/product-out') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Unarchive className="w-5 h-5"/>
                             Barang Keluar
                             </Link>
                         </li>
                         <li>
-                            <Link href="/account" className={`flex items-center gap-2 py-2 px-5 rounded text-base font-medium ${url.startsWith('/account') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
+                            <Link href="/account" className={`flex items-center gap-2 py-2 px-5 rounded-md text-base font-medium ${url.startsWith('/account') ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-900 rounded hover:bg-primary-50'}`}>
                             <Person className="w-5 h-5"/>
                             Akun
                             </Link>

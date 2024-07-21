@@ -3,13 +3,22 @@
 @tailwind utilities;
 
 @layer utilities{
-    .btn-md{
-        @apply px-5 py-2.5 text-sm font-medium text-center focus:ring focus:outline-none
+    .btn {
+        @apply flex justify-center gap-2 text-white focus:ring focus:outline-none focus:border-none rounded-md text-sm px-5 py-2.5 font-medium disabled:cursor-not-allowed
     }
-    .btn-lg{
-        @apply px-5 py-3 text-base font-medium text-center focus:ring focus:outline-none
+    .btn.primary {
+        @apply bg-primary-500 hover:bg-primary-600 focus:ring-primary-200 disabled:bg-primary-400
     }
-    input[type]:not([type="checkbox"]){
+    .btn.secondary {
+        @apply bg-gray-500 hover:bg-gray-600 focus:ring-gray-200 disabled:bg-gray-400
+    }
+    .btn.warning {
+        @apply bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-200 disabled:bg-yellow-400
+    }
+    .btn.danger {
+        @apply bg-red-500 hover:bg-red-600 focus:ring-red-200 disabled:bg-red-400
+    }
+    input[type]:not([type="checkbox"]) {
         @apply text-sm bg-slate-50 border border-gray-300 text-gray-700 focus:ring-primary-500 focus:border-primary-500
     }  
 }

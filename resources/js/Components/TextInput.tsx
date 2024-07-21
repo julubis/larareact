@@ -1,30 +1,21 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, ReactNode } from "react"
 
-export default forwardRef(function TextInput(
-    { type = 'text', className = '', isFocused = false, ...props }: InputHTMLAttributes<HTMLInputElement> & { isFocused?: boolean },
-    ref
-) {
-    const localRef = useRef<HTMLInputElement>(null);
-
-    useImperativeHandle(ref, () => ({
-        focus: () => localRef.current?.focus(),
-    }));
-
-    useEffect(() => {
-        if (isFocused) {
-            localRef.current?.focus();
-        }
-    }, []);
-
+export default function TextInput({label, icon, type, errorMsg, ...props}: InputHTMLAttributes<HTMLInputElement> &
+    {label?: string, icon?: ReactNode, errorMsg?: string | undefined}) {
+    
     return (
-        <input
-            {...props}
-            type={type}
-            className={
-                'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ' +
-                className
+        <>
+        <label htmlFor={props.id} className={`block mb-1 text-sm font-medium text-gray-900 ${props.required ? "after:content-['*'] after:text-red-500" : "" }`}>{label}</label>
+        <div className="relative">
+            <input type={type ? type : 'text'} className={`w-full p-2.5 rounded-md ${icon ? 'ps-10': ''}`} {...props}/>
+            {
+                icon && 
+                <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-500">
+                    { icon }
+                </div>
             }
-            ref={localRef}
-        />
-    );
-});
+        </div>
+        {errorMsg && <p className="mt-1 text-xs text-red-600 ">{errorMsg}</p>}
+        </>
+    )
+}
