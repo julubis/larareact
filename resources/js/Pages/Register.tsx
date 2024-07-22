@@ -22,7 +22,7 @@ export default function Register() {
         <div className="antialiased bg-gray-100">
             <Navbar/>
             <main className="px-4 pt-20 min-h-screen flex flex-col sm:justify-center items-center sm:pt-0 bg-gray-100">
-                <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
+                <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow p-4 sm:p-6 md:p-8">
                     <h2 className="text-xl font-medium text-center mb-1 text-gray-900">Selamat Datang</h2>
                     <h3 className="text-center text-sm mb-2 text-gray-500 font-medium">Silahkan masuk ke akun Anda</h3>
                     <form className="p-4" onSubmit={submit}>
