@@ -27,7 +27,12 @@ export default function Index({ auth, distributors, flash }: PageProps & {distri
         distributor.name,
         distributor.phone,
         distributor.address,
-        <Link href={`/distributors/detail/${distributorIdFormat(distributor.id)}`} className="text-primary-600 hover:underline">Detail</Link>
+        <Link
+            href={`/distributors/detail/${distributorIdFormat(distributor.id)}`}
+            className="text-primary-600 hover:underline"
+        >
+            Detail
+        </Link>
     ]);
 
     const tableHeader: TableHeader[] = [

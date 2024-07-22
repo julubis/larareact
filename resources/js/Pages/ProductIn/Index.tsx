@@ -27,7 +27,12 @@ export default function Index({ auth, productIns, flash }: PageProps & {productI
         dateFormat(productIn.date),
         productIn.distributor,
         priceFormat(productIn.total_price),
-        <Link href={`/product-in/detail/${productInIdFormat(productIn.id)}`} className="text-primary-600 hover:underline">Detail</Link>
+        <Link 
+            href={`/product-in/detail/${productInIdFormat(productIn.id)}`}
+            className="text-primary-600 hover:underline"
+        >
+            Detail
+        </Link>
     ]);
 
     const tableHeader: TableHeader[] = [

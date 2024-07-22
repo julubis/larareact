@@ -106,7 +106,7 @@ class ProductController extends Controller
         $category_id = $request->category['id'];
         $unit_id = $request->unit['id'];
 
-        if (isset($category_id, $request->category['name'])) {
+        if (isset($category_id)) {
             $category = ProductCategory::create([
                 'name' => $request->category['name'],
                 'shop_id' => $shop_id
@@ -114,7 +114,7 @@ class ProductController extends Controller
             $category_id = $category->id;
         } 
 
-        if (isset($unit_id, $request->unit['name'])) {
+        if (isset($unit_id)) {
             $unit = ProductUnit::create([
                 'name' => $request->unit['name'],
                 'shop_id' => $shop_id
@@ -236,7 +236,7 @@ class ProductController extends Controller
         $category_id = $request->category['id'];
         $unit_id = $request->unit['id'];
 
-        if (!$category_id && $request->category['name']) {
+        if (!$category_id) {
             $category = ProductCategory::create([
                 'name' => $request->category['name'],
                 'shop_id' => $shop_id
@@ -244,7 +244,7 @@ class ProductController extends Controller
             $category_id = $category->id;
         } 
 
-        if (!$unit_id && $request->unit['name']) {
+        if (!$unit_id) {
             $unit = ProductUnit::create([
                 'name' => $request->unit['name'],
                 'shop_id' => $shop_id

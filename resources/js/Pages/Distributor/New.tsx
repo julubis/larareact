@@ -4,9 +4,11 @@ import { FormEventHandler } from "react";
 import { PageProps } from "@/types";
 import AuthLayout from "@/Layouts/AuthLayout";
 import Button from "@/Components/Button";
+import TextInput from "@/Components/TextInput";
+import Textarea from "@/Components/Textarea";
 
 export default function New({ auth }: PageProps) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: '',
         phone: '',
         address: '',
@@ -26,21 +28,40 @@ export default function New({ auth }: PageProps) {
                     <hr className="border border-gray-200"/>
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Nama Distributor</label>
-                    <input value={data.name} onChange={(e) => setData('name', e.target.value)}  type="text" name="name" className="w-full rounded-md" autoFocus required />
+                    <TextInput
+                        label="Nama Distributor"
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value)}
+                        id="name"
+                        errorMsg={errors.name}
+                        autoFocus
+                        required
+                    />
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Nomor Telepon</label>
-                    <input value={data.phone} onChange={(e) => setData('phone', e.target.value)} type="text" name="price" className="w-full rounded-md" required />
+                    <TextInput
+                        label="Nomor Telepon"
+                        value={data.phone}
+                        onChange={(e) => setData('phone', e.target.value)}
+                        id="phone"
+                        errorMsg={errors.phone}
+                        required
+                    />
                 </div>
                 
                 <div className="max-w-screen-sm sm:col-span-2">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-900 after:content-['*'] after:text-red-500">Alamat</label>
-                    <textarea value={data.address} onChange={(e) => setData('address', e.target.value)}  name="description" className="w-full rounded-md bg-gray-50 border border-gray-300" required></textarea>
+                    <Textarea
+                        label="Alamat"
+                        value={data.address}
+                        onChange={(e) => setData('address', e.target.value)}
+                        id="address"
+                        errorMsg={errors.address}
+                        required
+                    />
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
-                    <Link href="/products" className="btn secondary"><Back className="w-5 h-5"/>Kembali</Link>
-                    <Button icon={<Save className="w-5 h-5"/>} type="submit">Simpan</Button>
+                    <Link href="/distributors" className="btn secondary"><Back className="w-5 h-5"/>Kembali</Link>
+                    <Button icon={<Save className="w-5 h-5"/>} type="submit" disabled={processing}>Simpan</Button>
                 </div>
             </form>
         </AuthLayout>
