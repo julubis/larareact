@@ -1,5 +1,7 @@
 import Button from "@/Components/Button";
 import { Back, Pencil, Save, Trash } from "@/Components/Icons";
+import Textarea from "@/Components/Textarea";
+import TextInput from "@/Components/TextInput";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps } from "@/types";
 import { Link, useForm } from "@inertiajs/react";
@@ -34,17 +36,56 @@ export default function Detail({ auth, distributor }: PageProps & {distributor: 
                     <hr className="border border-gray-200"/>
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-600 ${isEdit && "after:content-['*'] after:text-red-500"}`}>Nama Distributor</label>
-                    {isEdit ? <input value={data.name} onChange={(e) => setData('name', e.target.value)} type="text" name="phone" className="w-full rounded-md" autoFocus /> : <p className="w-full text-lg text-gray-900">{distributor.name}</p>}
+                    {
+                        isEdit ?
+                        <TextInput
+                            label="Nama Distributor"
+                            value={data.name}
+                            onChange={(e) => setData('name', e.target.value)}
+                            id="name"
+                            errorMsg={errors.name}
+                            required
+                            autoFocus
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Nama Distributor</p>
+                            <p className="w-full text-lg text-gray-900">{distributor.name}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-600 ${isEdit && "after:content-['*'] after:text-red-500"}`}>Nomor Telepon</label>
-                    {isEdit ? <input value={data.phone} onChange={(e) => setData('phone', e.target.value)} type="text" name="phone" className="w-full rounded-md" /> : <p className="w-full text-lg text-gray-900">{distributor.phone}</p>}
+                    {
+                        isEdit ?
+                        <TextInput
+                            label="Nomor Telepon"
+                            value={data.phone}
+                            onChange={(e) => setData('phone', e.target.value)}
+                            id="phone"
+                            errorMsg={errors.phone}
+                            required
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Nomor Telepon</p>
+                            <p className="w-full text-lg text-gray-900">{distributor.phone}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm sm:col-span-2">
-                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-600 ${isEdit && "after:content-['*'] after:text-red-500"}`}>Alamat</label>
-                    {isEdit ? <textarea value={data.address} onChange={(e) => setData('address', e.target.value)} name="address" className="w-full rounded-md bg-gray-50 border border-gray-300" ></textarea> : <p className="w-full text-lg text-gray-900">{distributor.address}</p>}
-                    
+                    {
+                        isEdit ?
+                        <Textarea
+                            label="Alamat"
+                            value={data.address}
+                            onChange={(e) => setData('address', e.target.value)}
+                            id="address"
+                            errorMsg={errors.address}
+                            required
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Alamat</p>
+                            <p className="w-full text-lg text-gray-900">{distributor.address}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
                     {

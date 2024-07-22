@@ -1,15 +1,18 @@
-import { _internal_ComponentCombobox, Combobox, ComboboxButton, ComboboxButtonProps, ComboboxInput, ComboboxOption, ComboboxOptions, ComboboxProps } from "@headlessui/react"
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
 import { ArrowUnfold } from "./Icons"
-import { InputHTMLAttributes, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { router } from "@inertiajs/react";
 
-export default function ComboboxSelect({id, label, options, errorMsg, value, onChange}: &
+export default function ComboboxSelect({id, label, options, errorMsg, value, customValue = true, placeholder, required, onChange}: &
     {
         id: string
         label: string,
         options: {id: number, name: string}[],
         value: any,
+        customValue?: boolean,
         onChange: (value: any) => void,
+        placeholder?: string,
+        required?: boolean,
         errorMsg?: string | undefined
     }
 ) {
@@ -29,7 +32,7 @@ export default function ComboboxSelect({id, label, options, errorMsg, value, onC
     }
     return (
         <>
-            <label htmlFor={id} className="block mb-1 text-sm font-medium text-gray-900">{label}</label>
+            <label htmlFor={id} className={`block mb-1 text-sm font-medium text-gray-900 ${required ? "after:content-['*'] after:text-red-500": ''}`}>{label}</label>
             <Combobox value={value} onChange={onChange} onClose={() => setOption('')}>
                 <div className="relative">
                     <ComboboxInput
@@ -40,6 +43,8 @@ export default function ComboboxSelect({id, label, options, errorMsg, value, onC
                         }}
                         id={id}
                         className="w-full p-2.5 rounded-md"
+                        placeholder={placeholder}
+                        required={required}
                     />
                     <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
                         <ArrowUnfold className="size-4 text-gray-500" />
@@ -50,7 +55,7 @@ export default function ComboboxSelect({id, label, options, errorMsg, value, onC
                     anchor="bottom start"
                     className="bg-white border border-gray-300 rounded-md"
                 >
-                {option.trim().length > 0 && options.length == 0  && (
+                {option.trim().length > 0 && options.length == 0  && customValue && (
                     <ComboboxOption
                         value={{ id: 0, name: option }} 
                         className="group flex text-sm cursor-default items-center gap-2 py-1.5 px-3 select-none data-[focus]:bg-primary-100"

@@ -1,6 +1,7 @@
 import Alert from "@/Components/Alert";
 import Button from "@/Components/Button";
 import { Add, ScanBarcode } from "@/Components/Icons";
+import Modal from "@/Components/Modal";
 import Pagination from "@/Components/Pagination";
 import Scanner from "@/Components/Scanner";
 import SearchBox from "@/Components/SearchBox";
@@ -8,7 +9,6 @@ import Table from "@/Components/Table";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps, TableHeader } from "@/types";
 import { priceFormat, productIdFormat } from "@/utils/formats";
-import { Dialog, DialogPanel } from "@headlessui/react";
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
@@ -26,7 +26,7 @@ interface Products {
 }
 
 export default function Index({ auth, products, flash }: PageProps & {products: Products}) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false); // open scanner
     const { query } = usePage<{query: {search?: string}}>().props;
 
     const productsList = products.data.map(product => [
@@ -36,7 +36,12 @@ export default function Index({ auth, products, flash }: PageProps & {products: 
         product.stock,
         product.unit ? product.unit : '-',
         priceFormat(product.price),
-        <Link href={`/products/detail/${productIdFormat(product.id)}`} className="text-primary-600 hover:underline">Detail</Link>
+        <Link 
+            href={`/products/detail/${productIdFormat(product.id)}`} 
+            className="text-primary-600 hover:underline"
+        >
+            Detail
+        </Link>
     ]);
 
     const tableHeader: TableHeader[] = [
@@ -75,21 +80,15 @@ export default function Index({ auth, products, flash }: PageProps & {products: 
 
                 <div className="flex justify-center">
                     <Pagination page={products.current_page} totalPage={products.last_page}/>
-
-                    <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="fixed z-40">
-                        <div className="fixed inset-0 flex items-center justify-center bg-black/60">
-                        <DialogPanel className="max-w-screen-sm h-fit w-full">
-                            <div className="flex flex-col relative">
-                                <div className="absolute z-50 text-center left-1/2 -translate-x-1/2 w-full mt-4">
-                                    <p className="text-white font-bold text-lg">Arahkan kamera ke barcode</p>
-                                    <p className="text-gray-100 font-medium text-md">Tempatkan barcode ke dalam kotak</p>
-                                </div>
-                                <button onClick={() => setIsOpen(false)} className="absolute bg-white/50 z-50 top-4 right-4 rounded-full text-center w-10 h-10">x</button>
-                                {isOpen && <Scanner updateData={setIsOpen}/>}
+                    <Modal show={isOpen} onClose={() => setIsOpen(false)}>
+                        <div className="flex flex-col relative">
+                            <div className="absolute z-50 text-center left-1/2 -translate-x-1/2 w-full mt-4">
+                                <p className="text-white font-bold text-lg">Arahkan kamera ke barcode</p>
+                                <p className="text-gray-100 font-medium text-md">Tempatkan barcode ke dalam kotak</p>
                             </div>
-                        </DialogPanel>
+                            {isOpen && <Scanner updateData={setIsOpen}/>}
                         </div>
-                    </Dialog>
+                    </Modal>
                 </div>
             </div>
         </AuthLayout>

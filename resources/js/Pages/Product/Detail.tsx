@@ -1,11 +1,13 @@
-import { ArrowUnfold, Back, Pencil, Save, Trash } from "@/Components/Icons";
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
+import { Back, Pencil, Save, Trash } from "@/Components/Icons";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps } from "@/types";
-import { Link, router, useForm } from "@inertiajs/react";
-import { FormEventHandler, useRef, useState } from "react";
+import { Link, useForm } from "@inertiajs/react";
+import { FormEventHandler, useState } from "react";
 import Button from "@/Components/Button";
-import { priceFormat } from "@/utils/formats";
+import { priceFormat, productIdFormat } from "@/utils/formats";
+import TextInput from "@/Components/TextInput";
+import ComboboxSelect from "@/Components/ComboboxSelect";
+import Textarea from "@/Components/Textarea";
 
 interface Product {
     id: number
@@ -29,33 +31,18 @@ export default function Detail({ auth, product, categories, units }: PageProps &
     units: {id: number, name: string}[]
 }) {
     const [isEdit, setIsEdit] = useState(false);
-    const { data, setData, put, processing, errors, reset } = useForm({
+    const { data, setData, put, processing, errors } = useForm({
         name: product.name,
         category: {id: product.category.id, name: product.category.name},
         unit: {id: product.unit.id, name: product.unit.name},
         price: product.price,
-        code: product.code || '',
+        code: product.code,
         description: product.description
     });
 
-    const [category, setCategory] = useState('');
-    const [unit, setUnit] = useState('');
-    const debounce = useRef<number | undefined>();
-
-    const showOption = (data: Record<string, string>) => {
-        if (debounce.current) {
-            clearTimeout(debounce.current);
-        }
-        debounce.current = window.setTimeout(() => {
-            router.get('', data, {
-                preserveState: true, preserveScroll: true
-            });
-        }, 500);
-    }
-
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(route('products.edit', {id: `B${product.id.toString().padStart(3, '0')}`}));
+        put(route('products.edit', {id: productIdFormat(product.id)}));
     };
 
     return (
@@ -67,108 +54,115 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                     <hr className="border border-gray-200"/>
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-600 ${isEdit && "after:content-['*'] after:text-red-500"}`}> Nama Barang</label>
-                    {isEdit ? <input value={data.name} onChange={(e) => setData('name', e.target.value)} type="text" name="name" className="w-full rounded-md" autoFocus /> : <p className="w-full text-lg text-gray-900">{product.name}</p>}
-                    {errors.name && <p className="mt-1 text-xs text-red-600 ">{errors.name}</p>}
+                    {
+                        isEdit ?
+                        <TextInput
+                            label="Nama Barang"
+                            value={data.name}
+                            onChange={(e) => setData('name', e.target.value)}
+                            id="name"
+                            errorMsg={errors.name}
+                            required
+                            autoFocus
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Nama Barang</p>
+                            <p className="w-full text-lg text-gray-900">{product.name}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className={`block mb-1 text-sm font-medium text-gray-600 ${isEdit && "after:content-['*'] after:text-red-500"}`}>Harga</label>
-                    {isEdit ? <input value={data.price || ''} onChange={(e) => setData('price', +e.target.value)} type="number" name="price" className="w-full rounded-md" /> : <p className="w-full text-lg text-gray-900">{priceFormat(product.price)}</p>}
-                    {errors.price && <p className="mt-1 text-xs text-red-600 ">{errors.price}</p>}
+                    {
+                        isEdit ?
+                        <TextInput
+                            label="Harga"
+                            value={data.price || ''}
+                            type="number"
+                            onChange={(e) => setData('price', +e.target.value)}
+                            id="price"
+                            errorMsg={errors.price}
+                            required
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Harga</p>
+                            <p className="w-full text-lg text-gray-900">{priceFormat(product.price)}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Kategori</label>
-                    {isEdit ? <Combobox value={data.category} onChange={(value) => setData('category', value ? {id: value.id, name: value?.name || ''}: {id: 0, name: ''})} onClose={() => setCategory('')}>
-                        <div className="relative">
-                        <ComboboxInput
-                            displayValue={(category: {name?: string}) => category?.name || ''}
-                            onChange={(event) => {
-                                setCategory(event.target.value.trim())
-                                showOption({category: event.target.value.trim()})
-                            }}
-                            className="w-full rounded-md"
-                        />
-                        <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
-                            <ArrowUnfold className="size-4 text-gray-500" />
-                        </ComboboxButton>
-                        </div>
-                        
-                        <ComboboxOptions
-                        anchor="bottom start"
-                        className="bg-white border border-gray-300 rounded-md"
-                        >
-                        {category.length !== 0 && category.trim().toLowerCase() !== categories[0]?.name.toLowerCase() && (
-                        <ComboboxOption value={{ id: null, name: category }} className="group text-sm flex cursor-default items-center gap-2 py-1.5 px-3 select-none data-[focus]:bg-primary-100">
-                            Tambah kategori<span className="font-medium">"{category}"</span>
-                        </ComboboxOption>
-                        )}
-                        {categories.map((category) => (
-                            <ComboboxOption
-                            key={category.id}
-                            value={category}
-                            className="group flex cursor-default items-center gap-2 py-1.5 px-3 select-none data-[focus]:bg-primary-100"
-                            >
-                            {/* <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" /> */}
-                            <div className="text-sm/6 text-black">{category.name}</div>
-                            </ComboboxOption>
-                        ))}
-                        </ComboboxOptions>
-                    </Combobox> : <p className="w-full text-lg text-gray-900">{product.category.name || '-'}</p>}
-                    {errors.category && <p className="mt-1 text-xs text-red-600 ">{errors.category}</p>}
+                    {
+                        isEdit ?
+                        <ComboboxSelect
+                            label="Kategori"
+                            options={categories}
+                            value={data.category}
+                            onChange={(e) => setData('category', e.target.value)}
+                            id="category"
+                            errorMsg={errors.category}
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Kategori</p>
+                            <p className="w-full text-lg text-gray-900">{product.category.name || '-'}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Satuan</label>
-                    {isEdit ? <Combobox value={data.unit} onChange={(value) => setData('unit', value ? {id: value.id, name: value.name} : {id: 0, name: ''})} onClose={() => setUnit('')}>
-                        <div className="relative">
-                        <ComboboxInput
-                            displayValue={(unit: {name?: string}) => unit?.name || ''}
-                            onChange={(event) => {
-                                setUnit(event.target.value.trim())
-                                showOption({unit: event.target.value.trim()})
-                            }}
-                            className="w-full rounded-md"
-                        />
-                        <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
-                            <ArrowUnfold className="size-4 text-gray-500" />
-                        </ComboboxButton>
-                        </div>
-                        
-                        <ComboboxOptions
-                        anchor="bottom start"
-                        className="bg-white border border-gray-300 rounded-md"
-                        >
-                        {unit.length !== 0 && unit.trim().toLowerCase() !== units[0]?.name.toLowerCase() && (
-                        <ComboboxOption value={{ id: null, name: unit }} className="group flex text-sm cursor-default items-center gap-2 py-1.5 px-3 select-none data-[focus]:bg-primary-100">
-                            Tambah satuan<span className="font-medium">"{unit}"</span>
-                        </ComboboxOption>
-                        )}
-                        {units.map((unit) => (
-                            <ComboboxOption
-                            key={unit.id}
-                            value={unit}
-                            className="group flex cursor-default items-center gap-2 py-1.5 px-3 select-none data-[focus]:bg-primary-100"
-                            >
-                            {/* <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" /> */}
-                            <div className="text-sm/6 text-black">{unit.name}</div>
-                            </ComboboxOption>
-                        ))}
-                        </ComboboxOptions>
-                    </Combobox> : <p className="w-full text-lg text-gray-900">{product.unit.name || '-'}</p>}
-                    {errors.unit && <p className="mt-1 text-xs text-red-600 ">{errors.unit}</p>}
+                    {
+                        isEdit ?
+                        <ComboboxSelect
+                            label="Satuan"
+                            options={units}
+                            value={data.unit}
+                            onChange={(e) => setData('unit', e.target.value)}
+                            id="unit"
+                            errorMsg={errors.unit}
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Satuan</p>
+                            <p className="w-full text-lg text-gray-900">{product.unit.name || '-'}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Barcode</label>
-                    {isEdit ? <input value={data.code} onChange={(e) => setData('code', e.target.value.trim())} type="text" name="name" className="w-full rounded-md" autoFocus /> :  <p className="w-full text-lg text-gray-900">{product.code || '-'}</p>}
-                    {errors.code && <p className="mt-1 text-xs text-red-600 ">{errors.code}</p>}
+                    {
+                        isEdit ?
+                        <TextInput
+                            label="Barcode"
+                            value={data.code}
+                            type="number"
+                            onChange={(e) => setData('code', e.target.value.trim())}
+                            id="code"
+                            errorMsg={errors.code}
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Barcode</p>
+                            <p className="w-full text-lg text-gray-900">{product.code}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm">
-                    {!isEdit && <><label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600">Stok</label>
-                    <p className="w-full text-lg text-gray-900">{product.stock}</p></>}
+                    {!isEdit && 
+                        <>
+                        <p className="block mb-1 text-sm font-medium text-gray-600">Stok</p>
+                        <p className="w-full text-lg text-gray-900">{product.stock}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm sm:col-span-2">
-                    <label htmlFor="" className="block mb-1 text-sm font-medium text-gray-600 ">Deskripsi</label>
-                    {isEdit ? <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} name="description" cols={5} className="w-full min-h-24 rounded-md text-sm border border-gray-300 bg-slate-50"></textarea> : <p className="w-full text-lg text-gray-900">{product.description || '-'}</p>}
-                    {errors.description && <p className="mt-1 text-xs text-red-600 ">{errors.description}</p>}
+                    {
+                        isEdit ?
+                        <Textarea
+                            label="Deskripsi"
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            id="description"
+                            errorMsg={errors.description}
+                        />:
+                        <>
+                            <p className="block mb-1 text-sm font-medium text-gray-600">Deskripsi</p>
+                            <p className="w-full text-lg text-gray-900">{product.description || '-'}</p>
+                        </>
+                    }
                 </div>
                 <div className="max-w-screen-sm sm:col-span-3 flex gap-2">
                     {
@@ -179,7 +173,7 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                         </> :
                         <>
                             <Button colorScheme="warning" type="button" onClick={() => setIsEdit(true)} icon={<Pencil className="w-5 h-5"/>}>Edit</Button>
-                            <Link href={`/products/B${product.id.toString().padStart(3, '0')}`} as="button" method="delete" type="button" className="btn danger"><Trash className="h-5 w-5"/>Hapus</Link>
+                            <Link href={`/products/B${productIdFormat(product.id)}`} as="button" method="delete" type="button" className="btn danger"><Trash className="h-5 w-5"/>Hapus</Link>
                         </>
                     }
                 </div>
