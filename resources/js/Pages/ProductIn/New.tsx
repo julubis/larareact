@@ -109,10 +109,10 @@ export default function New({ auth, products, distributors }: PageProps &
                             id="distributor"
                             errorMsg={errors["distributor.id"]}
                             options={distributors}
-                            value={data.distributor} 
+                            value={data.distributor || {}} 
                             customValue={false}
                             placeholder="Pilih distributor"
-                            onChange={(value) => setData('distributor', {id: value.id, name: value.name})}
+                            onChange={(value) => setData('distributor', {id: value?.id, name: value?.name})}
                         />
                     </div>
                     <div className="sm:col-span-2 md:col-span-3">
@@ -129,7 +129,7 @@ export default function New({ auth, products, distributors }: PageProps &
                                 value={product} 
                                 placeholder="Pilih barang"
                                 customValue={false}
-                                onChange={(value) => setProduct({...product, id: value.id, name: value.name})}
+                                onChange={(value) => setProduct({...product, id: value?.id, name: value?.name})}
                                 required
                             />
                         </div>

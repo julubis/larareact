@@ -148,11 +148,11 @@ class ProductController extends Controller
         $unit = request()->query('unit');
 
         $categories = ProductCategory::query()
-            ->where('shop_id', $shop_id);
+            ->where('shop_id', $shop_id)
+            ->where('name', 'like', '%'.$category.'%');
         $units = ProductUnit::query()
-            ->where('shop_id', $shop_id);
-        if ($category) $categories->where('name', 'like', '%'.$category.'%');
-        if ($unit) $units->where('name', 'like', '%'.$unit.'%');
+            ->where('shop_id', $shop_id)
+            ->where('name', 'like', '%'.$unit.'%');
 
         $product = Product::with(['category', 'unit'])
             ->where('id', '=', $product_id)
@@ -233,10 +233,10 @@ class ProductController extends Controller
             'description.string' => 'Deskripsi wajib berupa teks',
         ]);
 
-        $category_id = $request->category['id'];
-        $unit_id = $request->unit['id'];
+        $category_id = array_key_exists('id', $request->category) ? $request->category['id'] : null;
+        $unit_id = array_key_exists('id', $request->category) ? $request->category['id'] : null;
 
-        if (!$category_id) {
+        if ($category_id === 0) {
             $category = ProductCategory::create([
                 'name' => $request->category['name'],
                 'shop_id' => $shop_id
@@ -244,7 +244,7 @@ class ProductController extends Controller
             $category_id = $category->id;
         } 
 
-        if (!$unit_id) {
+        if (!$unit_id === 0) {
             $unit = ProductUnit::create([
                 'name' => $request->unit['name'],
                 'shop_id' => $shop_id

@@ -1,7 +1,11 @@
+import Alert from "@/Components/Alert";
+import Button from "@/Components/Button";
+import { Trash } from "@/Components/Icons";
 import Table from "@/Components/Table";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps } from "@/types";
 import { dateFormat, priceFormat, productInIdFormat } from "@/utils/formats";
+import { Link } from "@inertiajs/react";
 
 interface ProductIn {
     id: number,
@@ -16,7 +20,7 @@ interface ProductIn {
     }[]
 }
 
-export default function Detail({ auth, productIn }: PageProps & {productIn: ProductIn}) {
+export default function Detail({ auth, productIn, flash }: PageProps & {productIn: ProductIn}) {
     const dataTable = productIn.products.map(product => [
         product.name, 
         product.quantity, 
@@ -41,6 +45,7 @@ export default function Detail({ auth, productIn }: PageProps & {productIn: Prod
                 <p>Nama Distributor</p>
                 <p>: {productIn.distributor}</p>
             </div>
+            <Alert flash={flash}/>
             <Table 
                     header={[
                         {label: 'Nama Barang'},
@@ -51,6 +56,7 @@ export default function Detail({ auth, productIn }: PageProps & {productIn: Prod
                     body={dataTable}
                 />
             
+            <Link href={`/product-in/${productInIdFormat(productIn.id)}`} as="button" method="delete" type="button" className="btn danger"><Trash className="h-5 w-5"/>Hapus</Link>
         </AuthLayout>
     )
 }

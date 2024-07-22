@@ -35,7 +35,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('product-in', [ProductInController::class, 'index'])->name('product-in.get');
     Route::post('product-in', [ProductInController::class, 'store'])->name('product-in.add');
-    Route::put('product-in/{id}', [ProductInController::class, 'update'])->name('product-in.edit');
     Route::delete('product-in/{id}', [ProductInController::class, 'destroy'])->name('product-in.delete');
 
     Route::get('product-in/new', [ProductInController::class, 'create'])->name('product-in.create');
@@ -43,7 +42,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('product-out', [ProductOutController::class, 'index'])->name('product-out.get');
     Route::post('product-out', [ProductOutController::class, 'store'])->name('product-out.add');
-    Route::put('product-out/{id}', [ProductOutController::class, 'update'])->name('product-out.edit');
     Route::delete('product-out/{id}', [ProductOutController::class, 'destroy'])->name('product-out.delete');
 
     Route::get('product-out/new', [ProductOutController::class, 'create'])->name('product-out.create');

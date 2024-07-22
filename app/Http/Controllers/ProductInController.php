@@ -6,8 +6,10 @@ use App\Models\Distributor;
 use App\Models\Product;
 use App\Models\ProductIn;
 use App\Models\ProductInDetail;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ProductInController extends Controller
@@ -90,6 +92,8 @@ class ProductInController extends Controller
         $distributor_id = $request->distributor['id'];
         $products = $request->products;
 
+        DB::beginTransaction();
+
         $product_in = ProductIn::create([
             'date' => $date,
             'shop_id' => $shop_id,
@@ -115,6 +119,8 @@ class ProductInController extends Controller
 
         $product_in->total_price = $total_price;
         $product_in->save();
+
+        DB::commit();
 
         return redirect('/product-in')->with(['success' => 'Berhasil menambah data barang masuk']);
     }
@@ -181,6 +187,36 @@ class ProductInController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if (!preg_match('/^BM\d{3,}$/', $id)) return abort(404);
+        $product_in_id = (int)substr($id, 2);
+        $shop_id = Auth::user()->shop_id;
+
+        $product_in = ProductIn::with(['detail'])
+            ->where('id', '=', $product_in_id)
+            ->where('shop_id', '=', $shop_id)
+            ->first();
+
+        if(!$product_in) return abort(404);
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($product_in->detail as $detail) {
+                $prod = Product::find($detail->product->id);
+                if ($prod->stock < $detail->quantity) {
+                    throw new Exception('Stok barang "'.$prod->name.'" tidak cukup');
+                }
+                $prod->stock -= $detail->quantity;
+                $prod->save();
+            }
+            $product_in->delete();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            session()->flash('error', $e->getMessage());
+            return redirect()->back();
+        }
+
+        return redirect('/product-in')->with(['success' => 'Berhasil menghapus transaksi data barang masuk']);
     }
 }

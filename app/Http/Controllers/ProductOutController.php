@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductOut;
 use App\Models\ProductOutDetail;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ProductOutController extends Controller
@@ -76,6 +78,8 @@ class ProductOutController extends Controller
         $date = $request->date;
         $products = $request->products;
 
+        DB::beginTransaction();
+
         $product_out = ProductOut::create([
             'date' => $date,
             'shop_id' => $shop_id,
@@ -84,22 +88,32 @@ class ProductOutController extends Controller
 
         $total_price = 0;
 
-        foreach ($products as $product) {
-            $prod = Product::find($product['id']);
-            ProductOutDetail::create([
-                'product_out_id' => $product_out->id,
-                'product_id' => $product['id'],
-                'price' => $prod->price,
-                'quantity' => $product['quantity'],
-                'total_price' => $prod->price * $product['quantity']
-            ]);
-            $total_price += $prod->price * $product['quantity'];
-            $prod->stock -= $product['quantity'];
-            $prod->save();
+        try {
+            foreach ($products as $product) {
+                $prod = Product::find($product['id']);
+                ProductOutDetail::create([
+                    'product_out_id' => $product_out->id,
+                    'product_id' => $product['id'],
+                    'price' => $prod->price,
+                    'quantity' => $product['quantity'],
+                    'total_price' => $prod->price * $product['quantity']
+                ]);
+                if ($prod->stock < $product['quantity']) {
+                    throw new Exception('Stok barang "'.$prod->name.'" tidak cukup');
+                }
+                $total_price += $prod->price * $product['quantity'];
+                $prod->stock -= $product['quantity'];
+                $prod->save();
+            }
+    
+            $product_out->total_price = $total_price;
+            $product_out->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            session()->flash('error', $e->getMessage());
+            return redirect()->back();
         }
-
-        $product_out->total_price = $total_price;
-        $product_out->save();
 
         return redirect('/product-out')->with(['success' => 'Berhasil menambah data barang keluar']);
     }
@@ -117,6 +131,8 @@ class ProductOutController extends Controller
             ->where('id', '=', $product_out_id)
             ->where('shop_id', '=', $shop_id)
             ->first();
+
+        if(!$product_out) return abort(404);
 
         $products = [];
 
@@ -165,6 +181,27 @@ class ProductOutController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if (!preg_match('/^BK\d{3,}$/', $id)) return abort(404);
+        $product_out_id = (int)substr($id, 2);
+        $shop_id = Auth::user()->shop_id;
+
+        $product_out = ProductOut::with(['detail'])
+            ->where('id', '=', $product_out_id)
+            ->where('shop_id', '=', $shop_id)
+            ->first();
+        
+        if(!$product_out) return abort(404);
+
+        DB::beginTransaction();
+        foreach ($product_out->detail as $detail) {
+            $prod = Product::find($detail->product->id);
+            $prod->stock += $detail->quantity;
+            $prod->save();
+        }
+
+        $product_out->delete();
+        DB::commit();
+
+        return redirect('/product-out')->with(['success' => 'Berhasil menghapus transaksi data barang keluar']);
     }
 }

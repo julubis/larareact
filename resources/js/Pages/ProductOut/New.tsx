@@ -8,6 +8,7 @@ import { priceFormat } from "@/utils/formats";
 import Button from "@/Components/Button";
 import ComboboxSelect from "@/Components/ComboboxSelect";
 import TextInput from "@/Components/TextInput";
+import Alert from "@/Components/Alert";
 
 interface Product {
     id: number
@@ -17,7 +18,7 @@ interface Product {
     quantity: number
 }
 
-export default function New({ auth, products }: PageProps & 
+export default function New({ auth, products, flash }: PageProps & 
     {
         products: {id: number, name: string, stock: number}[]
 }) {
@@ -82,6 +83,7 @@ export default function New({ auth, products }: PageProps &
     return (
         <AuthLayout user={auth.user}>
             <h2 className="font-semibold text-gray-800 text-2xl mb-6 pt-3">Tambah Barang Keluar</h2>
+            <Alert flash={flash}/>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="flex w-full flex-col gap-3 bg-white p-4 rounded-md">
                     <div className="w-full">
@@ -114,7 +116,7 @@ export default function New({ auth, products }: PageProps &
                                 value={product} 
                                 placeholder="Pilih barang"
                                 customValue={false}
-                                onChange={(value) => setProduct({...product, id: value.id, name: value.name, price: value.price, stock: value.stock})}
+                                onChange={(value) => setProduct({...product, id: value?.id, name: value?.name, price: value?.price, stock: value?.stock})}
                                 required
                             />
                         </div>

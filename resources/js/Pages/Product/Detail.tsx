@@ -27,7 +27,8 @@ interface Product {
 }
 
 export default function Detail({ auth, product, categories, units }: PageProps & {
-    product: Product, categories: {id: number, name: string}[],
+    product: Product,
+    categories: {id: number, name: string}[],
     units: {id: number, name: string}[]
 }) {
     const [isEdit, setIsEdit] = useState(false);
@@ -95,8 +96,8 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                         <ComboboxSelect
                             label="Kategori"
                             options={categories}
-                            value={data.category}
-                            onChange={(e) => setData('category', e.target.value)}
+                            value={data.category || {}}
+                            onChange={(value) => {setData('category', {id: value?.id, name: value?.name})}}
                             id="category"
                             errorMsg={errors.category}
                         />:
@@ -112,8 +113,8 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                         <ComboboxSelect
                             label="Satuan"
                             options={units}
-                            value={data.unit}
-                            onChange={(e) => setData('unit', e.target.value)}
+                            value={data.unit || {}}
+                            onChange={(value) => setData('unit', {id: value?.id, name: value?.name})}
                             id="unit"
                             errorMsg={errors.unit}
                         />:
@@ -173,7 +174,7 @@ export default function Detail({ auth, product, categories, units }: PageProps &
                         </> :
                         <>
                             <Button colorScheme="warning" type="button" onClick={() => setIsEdit(true)} icon={<Pencil className="w-5 h-5"/>}>Edit</Button>
-                            <Link href={`/products/B${productIdFormat(product.id)}`} as="button" method="delete" type="button" className="btn danger"><Trash className="h-5 w-5"/>Hapus</Link>
+                            <Link href={`/products/${productIdFormat(product.id)}`} as="button" method="delete" type="button" className="btn danger"><Trash className="h-5 w-5"/>Hapus</Link>
                         </>
                     }
                 </div>

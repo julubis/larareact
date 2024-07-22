@@ -1,7 +1,9 @@
+import { Trash } from "@/Components/Icons";
 import Table from "@/Components/Table";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { PageProps } from "@/types";
 import { dateFormat, priceFormat, productOutIdFormat } from "@/utils/formats";
+import { Link } from "@inertiajs/react";
 
 interface ProductOut {
     id: number,
@@ -47,6 +49,7 @@ export default function Detail({ auth, productOut }: PageProps & {productOut: Pr
                     ]}
                     body={dataTable}
                 />
+            <Link href={`/product-out/${productOutIdFormat(productOut.id)}`} as="button" method="delete" type="button" className="btn danger"><Trash className="h-5 w-5"/>Hapus</Link>
         </AuthLayout>
     )
 }
